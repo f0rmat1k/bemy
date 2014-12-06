@@ -1,4 +1,4 @@
-gulp-bem-structure
+BEMe
 ==================
 
 Helper for auto-creation BEM dir and file structure

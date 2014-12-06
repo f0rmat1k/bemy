@@ -28,6 +28,8 @@ program: node
 parameters: /usr/local/lib/node_modules/BEMe/BEMe.js  $FileDir$ rename $Prompt$  
 working directory: $ProjectFileDir$
 
+And hotkey, e.g. ctrl + R.
+
 "Rename" renames your elem dir with files and css classes.  
 
 Mods and Blocks renaming coming soon..

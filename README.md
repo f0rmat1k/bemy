@@ -11,7 +11,7 @@ Webstorm
 ==
 Add external tool:
 
-For default task:
+For default task:  
 program: node  
 parameters: /usr/local/lib/node_modules/BEMe/BEMe.js $FilePath$  
 working directory: $ProjectFileDir$
@@ -23,10 +23,11 @@ select dir __elem + [ctrl + A] => [file] block__elem.css
 select file *.deps.js + [ctrl + A] => [dir] __elem, [dir] __elem, ..
 
 
-For rename task:
-program: node
-parameters: /usr/local/lib/node_modules/BEMe/BEMe.js  $FileDir$ rename $Prompt$
+For rename task:  
+program: node  
+parameters: /usr/local/lib/node_modules/BEMe/BEMe.js  $FileDir$ rename $Prompt$  
 working directory: $ProjectFileDir$
 
-"Rename" renames your elem dir with files and css classes.
+"Rename" renames your elem dir with files and css classes.  
+
 Mods and Blocks renaming coming soon..

@@ -1,5 +1,6 @@
 {
   "name": "BEMe",
+  "description": "Helper for auto-creation BEM dir and file structure",
   "version": "0.0.1",
   "dependencies": {
     "bluebird": "^2.3.11",

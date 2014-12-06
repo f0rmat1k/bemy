@@ -11,7 +11,7 @@ Webstorm
 ==
 Add external tool:
 
-For default task:  
+For default task:
 program: node  
 parameters: /usr/local/lib/node_modules/BEMe/BEMe.js $FilePath$  
 working directory: $ProjectFileDir$

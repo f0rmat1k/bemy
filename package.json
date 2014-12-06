@@ -1,5 +1,5 @@
 {
-  "name": "application-name",
+  "name": "BEMe",
   "version": "0.0.1",
   "dependencies": {
     "bluebird": "^2.3.11",

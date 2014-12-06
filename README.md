@@ -16,4 +16,4 @@ And hotkey, e.g. ctrl + A.
 
 Default behavior:
 select dir __elem + [ctrl + A] => [file] block__elem.css
-select file *.deps.js + [ctrl + A] => [dir] __elem, [dir] __elem, ..
+select file *.deps.js + [ctrl + A] => [dir] __elem, [dir] __elem, .. 

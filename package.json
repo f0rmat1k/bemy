@@ -1,15 +1,16 @@
 {
   "name": "BEMe",
   "description": "Helper for auto-creation BEM dir and file structure",
-  "repository" : {
-    "type" :  "git",
-    "url" :   "git@github.yandex-team.ru:f0rmat1k/BEMe.git"
+  "repository": {
+    "type": "git",
+    "url": "git@github.yandex-team.ru:f0rmat1k/BEMe.git"
   },
   "version": "0.0.1",
   "dependencies": {
     "bluebird": "^2.3.11",
     "gulp": "^3.8.10",
     "lodash": "^2.4.1",
+    "minimist": "^1.1.0",
     "mkdirp": "^0.5.0"
   }
 }

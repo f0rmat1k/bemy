@@ -7,7 +7,12 @@ Installation
 ==
 npm i -g git+https://github.yandex-team.ru/f0rmat1k/BEMe.git
 
-Webstorm
+Usage
+==
+[default-action]: gulp -f ./test/test.deps.js  
+[rename]: gulp rename -f ./test/__lol -p newElemName
+
+Usage with Webstorm
 ==
 Add external tool:
 

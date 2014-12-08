@@ -18,7 +18,7 @@ Add external tool:
 
 For default task:  
 program: gulp  
-parameters: -p $FilePath$  
+parameters: -f $FilePath$  
 working directory: [path to BEMe, e.g. /Users/f0rmat1k/node_modules/BEMe]
 
 And hotkey, e.g. ctrl + A.

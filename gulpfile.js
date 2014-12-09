@@ -10,19 +10,59 @@ Promise.promisifyAll(mkdirp);
 Promise.promisifyAll(fs);
 
 var options = minimist(process.argv.slice(2)),
-    trgPath = options.f,
-    prompt = options.p;
+    trgPath = options.f;
+    prompt = typeof options.p === 'string' ? options.p.split(' ') : null;
+
+var BEM_INFO = function(){
+    var info = {};
+
+    info.stat = fs.statSync(trgPath);
+    info.type = getTargetTypeByStat(info.stat);
+    info.isDir = info.stat.isDirectory();
+    info.isFile = info.stat.isFile();
+    info.dirName = getDirName(info);
+    info.isBlock = isBlock(info);
+    info.isElem = isElem(info);
+    info.blockName = getBlockName(null, info);
+    info.elemName = getElemName(info);
+    info.bemName = getBemName(info);
+
+    return info;
+}();
+
+var SUFFIXES = {
+    css: '.css',
+    js: '.js',
+    deps: '.deps.js',
+    bh: '.bh.js'
+};
 
 var DEFAULT_ACTIONS = {
-    depsFile: 'elem-dirs-from-deps',
-    elemDir: 'css-from-elem-dir'
-};
+        depsFile: 'elem-dirs-from-deps',
+        elemDir: 'css-from-elem-dir'
+    },
+    FILE_TEMPLATES = {
+        js: 'js-template.js',
+        css: 'css-template.css',
+        bh: 'bh-template.js',
+        deps: 'deps-template.js'
+    };
 
 gulp.task('default', function(){
     return fs
         .statAsync(trgPath)
-        .then(detectTargetTypeByStat)
+        .then(getTargetTypeByStat)
         .then(chooseActionByDefault);
+});
+
+gulp.task('create', function(){
+    return fs
+        .statAsync(trgPath)
+        .then(getTargetTypeByStat)
+        .then(startCreating)
+        .then(function(){
+            console.log('done!');
+        });
 });
 
 gulp.task('elem-dirs-from-deps', function(){
@@ -43,8 +83,10 @@ gulp.task('css-from-elem-dir', function(){
         .writeFile(cssFilePath, '.' + cssClassName + '\n{\n\n}');
 });
 
+//todo refactor
 gulp.task('rename', function(){
-    var newPath = path.resolve(trgPath, '..') + '/__' + prompt;
+    newName = prompt[0];
+    var newPath = path.resolve(trgPath, '..') + '/__' + newName;
 
     fs
         .renameAsync(trgPath, newPath)
@@ -55,18 +97,86 @@ gulp.task('rename', function(){
                     var oldElemName = path.basename(trgPath).replace('__', '');
 
                     var filePath = newPath + '/' + file,
-                        newFilePath = filePath.replace(oldElemName, prompt);
+                        newFilePath = filePath.replace(oldElemName, newName);
 
                     return fs
                         .renameAsync(filePath, newFilePath)
                         .then(function(){
-                            return renameCssClassesInFile(newFilePath, oldElemName, prompt);
+                            return renameCssClassesInFile(newFilePath, oldElemName, newName);
                         });
                 });
         });
 });
 
-function detectTargetTypeByStat(stat){
+function getBemName(info){
+    if (info.isBlock) return info.blockName;
+    if (info.isElem) return info.blockName + info.elemName;
+}
+
+function getDirName(info){
+    if (info.isDir) {
+        return trgPath.match(/[-a-z0-9_]+$/ig)[0];
+    }
+}
+
+function isBlock(info){
+    if (info.isFile) return;
+
+    var isBlock = /\/[^_][-a-z0-9]+$/i.test(trgPath);
+    return isBlock || false;
+}
+
+function isElem(info){
+    if (info.isFile) return;
+    return /__[-a-z0-9]+$/ig.test(trgPath);
+}
+
+function getBlockName(targetPath, info){
+    targetPath = targetPath || trgPath;
+
+    if (info && info.isBlock) return targetPath.match(/[-a-z0-9]+$/i)[0];
+
+    var dirName = path.dirname(targetPath),
+    baseName = path.basename(dirName);
+
+    if (/_/g.test(baseName)) {
+        return getBlockName(path.resolve(targetPath, '../'));
+    } else {
+        return baseName;
+    }
+}
+
+function getElemName(info){
+    if (info.isBlock) return '';
+    if (info.isElem) return info.dirName;
+
+    return '';
+}
+
+function startCreating(targetType){
+    return Promise.map(prompt, function(fileType){
+        return createFileFromTemplate(fileType);
+    });
+}
+
+function createFileFromTemplate(fileType){
+    var tmp = FILE_TEMPLATES[fileType],
+        file = insertName(getTemplate(tmp));
+
+    createFile(file, fileType);
+
+    //return getTemplate(tmp)
+    //    .then(insertName)
+    //    .then(createFile);
+}
+
+function insertName(file){
+    return file
+        .replace('{{blockName}}', BEM_INFO.blockName)
+        .replace('{{elemName}}', BEM_INFO.elemName);
+}
+
+function getTargetTypeByStat(stat){
     if (stat.isFile()) {
         return detectFileType(trgPath);
     } else if (stat.isDirectory()) {
@@ -92,9 +202,15 @@ function detectDirType(targetDir){
         dirType;
 
     switch (true) {
-        case /^(__)/.test(dirName):
+        case /^__/.test(dirName):
             dirType = 'elemDir';
             break;
+        case /^_/.test(dirName):
+            dirType = 'modDir';
+            break;
+
+        default:
+            dirType = 'blockDir';
     }
 
     return dirType;
@@ -153,4 +269,13 @@ function renameCssClassesInFile(filepath, oldString, newString){
                 });
         }
     });
+}
+
+function createFile(file, type, path){
+    path = (path || trgPath) + '/' + BEM_INFO.bemName + SUFFIXES[type];
+    fs.writeFileSync(path, file);
+}
+
+function getTemplate(tmpName){
+    return fs.readFileSync('tmp/' + tmpName, 'utf-8');
 }

@@ -27,6 +27,11 @@ Default behavior:
 select dir __elem + [ctrl + A] => [new file] block__elem.css  
 select file *.deps.js + [ctrl + A] => [new dir] __elem, [mkdir] __elem, ..
 
+For create task:
+program: gulp
+parameters: create -f $FilePath$ -p "$Prompt$"
+working directory: [path to BEMe, e.g. /Users/f0rmat1k/node_modules/BEMe]
+
 For rename task:  
 program: gulp  
 parameters: rename -f $FilePath$ -p $Prompt$  

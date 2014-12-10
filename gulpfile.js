@@ -209,7 +209,7 @@ function getElemsFormDeps(deps) {
         resultElemList = [];
 
     deps.forEach(function(item){
-        if (item['elem']) singleElems.push(item['elem']);
+        if (item['elem'] && !item['block']) singleElems.push(item['elem']);
     });
 
     if (elemsObj) {

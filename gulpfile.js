@@ -41,7 +41,8 @@ var SUFFIXES = {
 
 var DEFAULT_ACTIONS = {
         depsFile: createElemDirsByDeps,
-        elemDir: startCreating.bind(null, ['css'])
+        elemDir: startCreating.bind(null, ['css']),
+        modDir: startCreating.bind(null, ['css'])
     },
     FILE_TEMPLATES = {
         js: 'js-template.js',

@@ -1,5 +1,5 @@
 module.exports = function (bh) {
-    bh.match('{{blockName}}{{elemName}}', function (ctx) {
+    bh.match('{{blockName}}{{elemName}}{{modName}}', function (ctx) {
         ctx.tag('tag');
     });
 };

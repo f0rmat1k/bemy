@@ -187,10 +187,12 @@ function chooseActionByDefault(){
 }
 
 function depsToObj(data){
-    return (0, eval( '[' + data + ']' )[0]);
+    console.log((0, eval(data)));
+    return (0, eval(data));
 }
 
 function getElemsListFromDepsObj(data) {
+    //console.log(data);
     var mustElems = getElemsFormDeps(data.mustDeps),
         shouldElems = getElemsFormDeps(data.shouldDeps);
 
@@ -198,6 +200,8 @@ function getElemsListFromDepsObj(data) {
 }
 
 function getElemsFormDeps(deps) {
+    if (!deps) return [];
+
     //todo Подумать, как сделать лучше
     var elemsObj = _.find(deps, 'elems'),
         singleElems = [],

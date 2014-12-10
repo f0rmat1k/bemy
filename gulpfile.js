@@ -23,8 +23,10 @@ var BEM_INFO = function(){
     info.dirName = getDirName(info);
     info.isBlock = isBlock(info);
     info.isElem = isElem(info);
+    info.isMod = isMod(info);
     info.blockName = getBlockName(null, info);
     info.elemName = getElemName(info);
+    info.modName = getModName(info);
     info.bemName = getBemName(info);
 
     return info;
@@ -49,20 +51,11 @@ var DEFAULT_ACTIONS = {
     };
 
 gulp.task('default', function(){
-    return fs
-        .statAsync(trgPath)
-        .then(getTargetTypeByStat)
-        .then(chooseActionByDefault);
+    chooseActionByDefault();
 });
 
 gulp.task('create', function(){
-    return fs
-        .statAsync(trgPath)
-        .then(getTargetTypeByStat)
-        .then(startCreating)
-        .then(function(){
-            console.log('done!');
-        });
+    startCreating();
 });
 
 gulp.task('elem-dirs-from-deps', function(){
@@ -109,13 +102,14 @@ gulp.task('rename', function(){
 });
 
 function getBemName(info){
-    if (info.isBlock) return info.blockName;
-    if (info.isElem) return info.blockName + info.elemName;
+    return info.blockName + info.elemName + info.modName;
+    //if (info.isBlock) return info.blockName;
+    //if (info.isElem) return info.blockName + info.elemName;
 }
 
 function getDirName(info){
     if (info.isDir) {
-        return trgPath.match(/[-a-z0-9_]+$/ig)[0];
+        return getDirNameByPath(trgPath);
     }
 }
 
@@ -129,6 +123,12 @@ function isBlock(info){
 function isElem(info){
     if (info.isFile) return;
     return /__[-a-z0-9]+$/ig.test(trgPath);
+}
+
+function isMod(info){
+    if (info.isFile) return;
+
+    return /\/_[-a-z0-9]+$/ig.test(trgPath);
 }
 
 function getBlockName(targetPath, info){
@@ -147,14 +147,19 @@ function getBlockName(targetPath, info){
 }
 
 function getElemName(info){
-    if (info.isBlock) return '';
     if (info.isElem) return info.dirName;
+    if (info.isMod) return path.basename(path.resolve(trgPath, '../'));
 
     return '';
 }
 
-function startCreating(targetType){
-    return Promise.map(prompt, function(fileType){
+function getModName(info){
+    if (info.isMod) return info.dirName;
+    return '';
+}
+
+function startCreating(){
+    prompt.forEach(function(fileType){
         return createFileFromTemplate(fileType);
     });
 }
@@ -164,16 +169,13 @@ function createFileFromTemplate(fileType){
         file = insertName(getTemplate(tmp));
 
     createFile(file, fileType);
-
-    //return getTemplate(tmp)
-    //    .then(insertName)
-    //    .then(createFile);
 }
 
 function insertName(file){
     return file
         .replace('{{blockName}}', BEM_INFO.blockName)
-        .replace('{{elemName}}', BEM_INFO.elemName);
+        .replace('{{elemName}}', BEM_INFO.elemName)
+        .replace('{{modName}}', BEM_INFO.modName);
 }
 
 function getTargetTypeByStat(stat){
@@ -216,8 +218,8 @@ function detectDirType(targetDir){
     return dirType;
 }
 
-function chooseActionByDefault(targetType){
-    gulp.start(DEFAULT_ACTIONS[targetType]);
+function chooseActionByDefault(){
+    gulp.start(DEFAULT_ACTIONS[BEM_INFO.type]);
 }
 
 function depsToObj(data){
@@ -278,4 +280,8 @@ function createFile(file, type, path){
 
 function getTemplate(tmpName){
     return fs.readFileSync('tmp/' + tmpName, 'utf-8');
+}
+
+function getDirNameByPath(path){
+    return path.match(/[-a-z0-9_]+$/ig)[0];
 }

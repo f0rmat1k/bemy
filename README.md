@@ -32,13 +32,4 @@ program: gulp
 parameters: create -f $FilePath$ -p "$Prompt$"  
 working directory: [path to BEMe, e.g. /usr/local/lib/node_modules/BEMe]
 
-For rename task:  
-program: gulp  
-parameters: rename -f $FilePath$ -p $Prompt$  
-working directory: [path to BEMe, e.g. /usr/local/lib/node_modules/BEMe]
-
-And hotkey, e.g. ctrl + R.
-
-"Rename" renames your elem dir with files and css classes.  
-
 Mods and Blocks renaming coming soon..

@@ -28,7 +28,7 @@ var BEM_INFO = function(){
     info.elemName = getElemName(info);
     info.modName = getModName(info);
     info.bemName = getBemName(info);
-
+    console.log(info);
     return info;
 }();
 
@@ -67,30 +67,28 @@ function createElemDirsByDeps(){
 
 function getBemName(info){
     return info.blockName + info.elemName + info.modName;
-    //if (info.isBlock) return info.blockName;
-    //if (info.isElem) return info.blockName + info.elemName;
 }
 
 function getDirName(info){
-    if (info.isDir) {
+    if (info && info.isDir) {
         return getDirNameByPath(trgPath);
     }
 }
 
 function isBlock(info){
-    if (info.isFile) return;
+    if (info && info.isFile) return;
 
     var isBlock = /\/[^_][-a-z0-9]+$/i.test(trgPath);
     return isBlock || false;
 }
 
 function isElem(info){
-    if (info.isFile) return;
+    if (info && info.isFile) return;
     return /__[-a-z0-9]+$/ig.test(trgPath);
 }
 
 function isMod(info){
-    if (info.isFile) return;
+    if (info && info.isFile) return;
 
     return /\/_[-a-z0-9]+$/ig.test(trgPath);
 }
@@ -112,7 +110,11 @@ function getBlockName(targetPath, info){
 
 function getElemName(info){
     if (info.isElem) return info.dirName;
-    if (info.isMod) return path.basename(path.resolve(trgPath, '../'));
+    if (info.isMod) {
+        var parentDir = path.basename(path.resolve(trgPath, '../')),
+            parentIsElem = /^(__)/ig.test(parentDir);
+        if (parentIsElem) return parentDir;
+    }
 
     return '';
 }

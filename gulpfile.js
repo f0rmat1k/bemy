@@ -28,7 +28,7 @@ var BEM_INFO = function(){
     info.elemName = getElemName(info);
     info.modName = getModName(info);
     info.bemName = getBemName(info);
-    console.log(info);
+
     return info;
 }();
 
@@ -189,12 +189,10 @@ function chooseActionByDefault(){
 }
 
 function depsToObj(data){
-    console.log((0, eval(data)));
     return (0, eval(data));
 }
 
 function getElemsListFromDepsObj(data) {
-    //console.log(data);
     var mustElems = getElemsFormDeps(data.mustDeps),
         shouldElems = getElemsFormDeps(data.shouldDeps);
 

@@ -32,4 +32,4 @@ program: gulp
 parameters: create -f $FilePath$ -p "$Prompt$"  
 working directory: [path to BEMe, e.g. /usr/local/lib/node_modules/BEMe]
 
-Mods and Blocks renaming coming soon..
+Deep block renaming coming soon..

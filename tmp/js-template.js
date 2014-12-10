@@ -1,4 +1,4 @@
-BEM.DOM.decl('{{blockName}}{{elemName}}', {
+BEM.DOM.decl('{{blockName}}{{elemName}}{{modName}}', {
     onSetMod: {
         js: function () {
             this.collectElems();

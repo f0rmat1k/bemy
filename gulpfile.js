@@ -40,8 +40,8 @@ var SUFFIXES = {
 };
 
 var DEFAULT_ACTIONS = {
-        depsFile: 'elem-dirs-from-deps',
-        elemDir: 'css-from-elem-dir'
+        depsFile: createElemDirsByDeps,
+        elemDir: startCreating.bind(null, ['css'])
     },
     FILE_TEMPLATES = {
         js: 'js-template.js',
@@ -55,51 +55,15 @@ gulp.task('default', function(){
 });
 
 gulp.task('create', function(){
-    startCreating();
+    startCreating(prompt);
 });
 
-gulp.task('elem-dirs-from-deps', function(){
-    return fs
-        .readFileAsync(trgPath, 'utf-8')
+function createElemDirsByDeps(){
+    fs.readFileAsync(trgPath, 'utf-8')
         .then(depsToObj)
         .then(getElemsListFromDepsObj)
         .map(createElemsDirs);
-});
-
-gulp.task('css-from-elem-dir', function(){
-    var elemName = path.basename(trgPath),
-        blockName = path.basename(path.resolve(trgPath, '../')),
-        cssClassName = blockName + elemName,
-        cssFilePath = trgPath + '/' + cssClassName + '.css';
-
-    fs
-        .writeFile(cssFilePath, '.' + cssClassName + '\n{\n\n}');
-});
-
-//todo refactor
-gulp.task('rename', function(){
-    newName = prompt[0];
-    var newPath = path.resolve(trgPath, '..') + '/__' + newName;
-
-    fs
-        .renameAsync(trgPath, newPath)
-        .then(function(){
-            return fs
-                .readdirAsync(newPath)
-                .map(function(file){
-                    var oldElemName = path.basename(trgPath).replace('__', '');
-
-                    var filePath = newPath + '/' + file,
-                        newFilePath = filePath.replace(oldElemName, newName);
-
-                    return fs
-                        .renameAsync(filePath, newFilePath)
-                        .then(function(){
-                            return renameCssClassesInFile(newFilePath, oldElemName, newName);
-                        });
-                });
-        });
-});
+}
 
 function getBemName(info){
     return info.blockName + info.elemName + info.modName;
@@ -158,8 +122,8 @@ function getModName(info){
     return '';
 }
 
-function startCreating(){
-    prompt.forEach(function(fileType){
+function startCreating(fileTypes){
+    return fileTypes.forEach(function(fileType){
         return createFileFromTemplate(fileType);
     });
 }
@@ -219,7 +183,7 @@ function detectDirType(targetDir){
 }
 
 function chooseActionByDefault(){
-    gulp.start(DEFAULT_ACTIONS[BEM_INFO.type]);
+    DEFAULT_ACTIONS[BEM_INFO.type]();
 }
 
 function depsToObj(data){
@@ -255,22 +219,6 @@ function getElemsFormDeps(deps) {
 function createElemsDirs(elemName){
     var blockDir = path.dirname(trgPath);
     return mkdirp.mkdirpAsync(blockDir + '/__' + elemName);
-}
-
-function renameCssClassesInFile(filepath, oldString, newString){
-    return new Promise(function (resolve, reject) {
-        if (path.extname(filepath) === '.css') {
-            return fs
-                .readFileAsync(filepath, 'utf-8')
-                .then(function(data){
-                    var re = new RegExp(oldString, 'g');
-                    return data.replace(re, newString);
-                })
-                .then(function(newFile){
-                    return fs.writeFileAsync(filepath, newFile);
-                });
-        }
-    });
 }
 
 function createFile(file, type, path){

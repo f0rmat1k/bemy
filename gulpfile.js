@@ -36,7 +36,8 @@ var SUFFIXES = {
     css: '.css',
     js: '.js',
     deps: '.deps.js',
-    bh: '.bh.js'
+    bh: '.bh.js',
+    priv: '.priv.js'
 };
 
 var DEFAULT_ACTIONS = {
@@ -48,7 +49,8 @@ var DEFAULT_ACTIONS = {
         js: 'js-template.js',
         css: 'css-template.css',
         bh: 'bh-template.js',
-        deps: 'deps-template.js'
+        deps: 'deps-template.js',
+        priv: 'priv-template.js'
     };
 
 gulp.task('default', function(){
@@ -140,9 +142,9 @@ function createFileFromTemplate(fileType){
 
 function insertName(file){
     return file
-        .replace('{{blockName}}', BEM_INFO.blockName)
-        .replace('{{elemName}}', BEM_INFO.elemName)
-        .replace('{{modName}}', BEM_INFO.modName);
+        .replace(/{{blockName}}/g, BEM_INFO.blockName)
+        .replace(/{{elemName}}/g, BEM_INFO.elemName)
+        .replace(/{{modName}}/g, BEM_INFO.modName);
 }
 
 function getTargetTypeByStat(stat){

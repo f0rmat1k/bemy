@@ -34,23 +34,34 @@ var BEM_INFO = function(){
 
 var SUFFIXES = {
     css: '.css',
+    c: '.css',
     js: '.js',
+    j: '.js',
     deps: '.deps.js',
+    d: '.deps.js',
     bh: '.bh.js',
-    priv: '.priv.js'
+    b: '.bh.js',
+    priv: '.priv.js',
+    p: '.priv.js'
 };
 
 var DEFAULT_ACTIONS = {
+        blockDir: startCreating.bind(null, ['css']),
         depsFile: createElemDirsByDeps,
         elemDir: startCreating.bind(null, ['css']),
         modDir: startCreating.bind(null, ['css'])
     },
     FILE_TEMPLATES = {
         js: 'js-template.js',
+        j: 'js-template.js',
         css: 'css-template.css',
+        c: 'css-template.css',
         bh: 'bh-template.js',
+        b: 'bh-template.js',
         deps: 'deps-template.js',
-        priv: 'priv-template.js'
+        d: 'deps-template.js',
+        priv: 'priv-template.js',
+        p: 'priv-template.js'
     };
 
 gulp.task('default', function(){

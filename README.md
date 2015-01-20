@@ -5,7 +5,7 @@ Helper for auto-creation BEM dir and file structure
 
 Installation
 ==
-npm i beme
+npm i beme  
 Global gulp needs: npm i gulp -g
 
 Usage

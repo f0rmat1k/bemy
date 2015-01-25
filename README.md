@@ -4,7 +4,6 @@
 ##Установка
 
 ```bash
-npm i gulp -g #Требуется глобально установленный gulp
 npm i beme
 ```
 ##Использование
@@ -12,8 +11,8 @@ npm i beme
 Принимает набор аргументов в виде типов файлов (или их сокращений) и создает файлы, используя шаблоны в поставке тулзы.
 
 Интерфейс командной строки  
-`gulp create -f [file path] -p "[file types]"`, где `file path` — это путь к БЕМ-сущности, `file types` — строка, содержащая типы файлов для создания в виде сокращений с разделением через пробел.  
-Пример: `gulp create -f ~/testBlock/__elem -p "css js"` приведет к тому, что в `~/testBlock/__elem` появятся 2 файла: `testBlock__elem.js` и `testBlock__elem.css`.
+`node beme.js -t create -f [file path] -p "[file types]"`, где `file path` — это путь к БЕМ-сущности, `file types` — строка, содержащая типы файлов для создания в виде сокращений с разделением через пробел.  
+Пример: `node beme.js -t create -f ~/testBlock/__elem -p "css js"` приведет к тому, что в `~/testBlock/__elem` появятся 2 файла: `testBlock__elem.js` и `testBlock__elem.css`.
 
 ####Реплейсы шаблонов  
 При создании файлов БЕМ-сущностей в шаблонах вхождения `{{blockName}}`, `{{elemName}}`, `{{modName}}` будут заменены на соответствующие сущности имена. Дефолтный шаблон css-файла содержит
@@ -31,7 +30,7 @@ npm i beme
 ```
 
 Пример настройки задачи создания для `webstorm` через `external tools`:  
-![](http://jing.yandex-team.ru/files/f0rmat1k/2015-01-25_1632.png)  
+![](http://jing.yandex-team.ru/files/f0rmat1k/2015-01-25_2123.png)  
 Для большего удобства можно настроить hotkey для запуска задачи. Рекомендуемое сочетание `ctrl + c` (c в контексте create). Настраивается в keymap.
 
 ###Автозадача  
@@ -40,8 +39,8 @@ npm i beme
 2. !Эксперементально: Если целью является deps-файл, то создается набор пустых каталогов всех элементов блока.
 
 Интерфейс командной строки:  
-`gulp -f [file path]`, где `file path` — это путь к бем-сущности  
+`node beme.js -f [file path]`, где `file path` — это путь к бем-сущности  
 
 Пример настройки автозадачи для `webstorm` через `external tools`:  
-![](http://jing.yandex-team.ru/files/f0rmat1k/2015-01-25_1504.png)  
+![](http://jing.yandex-team.ru/files/f0rmat1k/2015-01-25_2124.png)  
 Для большего удобства можно настроить hotkey для запуска задачи. Рекомендуемое сочетание `ctrl + a` (c в контексте automatic). Настраивается в keymap.

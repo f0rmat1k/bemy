@@ -68,8 +68,7 @@ function getElemsListFromDepsObj(data) {
 
 function getElemsFormDeps(deps) {
     if (!deps) return [];
-
-    console.log(deps);
+    
     //todo Подумать, как сделать лучше
     var elemsObj = _.find(deps, 'elems'),
         singleElems = [],

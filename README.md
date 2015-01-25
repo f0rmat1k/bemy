@@ -30,7 +30,7 @@ npm i beme
 }
 ```
 
-Пример настройки задачи создания для webstorm через external tools:  
+Пример настройки задачи создания для `webstorm` через `external tools`:  
 ![](http://jing.yandex-team.ru/files/f0rmat1k/2015-01-25_1632.png)  
 Для большего удобства можно настроить hotkey для запуска задачи. Рекомендуемое сочетание `ctrl + c` (c в контексте create). Настраивается в keymap.
 
@@ -42,6 +42,6 @@ npm i beme
 Интерфейс командной строки:  
 `gulp -f [file path]`, где `file path` — это путь к бем-сущности  
 
-Пример настройки автозадачи для webstorm через external tools:  
+Пример настройки автозадачи для `webstorm` через `external tools`:  
 ![](http://jing.yandex-team.ru/files/f0rmat1k/2015-01-25_1504.png)  
 Для большего удобства можно настроить hotkey для запуска задачи. Рекомендуемое сочетание `ctrl + a` (c в контексте automatic). Настраивается в keymap.

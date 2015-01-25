@@ -91,13 +91,13 @@ function createElemsDir(elemName){
     fs.mkdirSync(path.join(blockDir, '__' + elemName));
 }
 
-function createFile(file, type, p){
-    p = path.join((p || trgPath), BEM_INFO.bemName + SUFFIXES[type]);
+function createFile(file, type){
+    var p = path.join(trgPath, BEM_INFO.bemName + SUFFIXES[type]);
 
     fs.writeFileSync(p, file);
 
     if (options.g) {
-        gitAdd(p);
+        gitAddTrg();
     }
 }
 
@@ -105,8 +105,8 @@ function getTemplate(tmpName){
     return fs.readFileSync(path.join('tmp', tmpName), 'utf-8');
 }
 
-function gitAdd(p){
-    exec('cd ' + trgPath + ' && git add ' + p, function (error, stdout, stderr) {
+function gitAddTrg(){
+    exec('cd ' + trgPath + ' && git add ' + trgPath, function (error, stdout, stderr) {
         if (stderr) console.log(stderr);
     });
 }

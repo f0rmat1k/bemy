@@ -1,6 +1,5 @@
 'use strict';
 
-var _ = require('lodash'); //todo
 var fs = require('fs');
 var minimist = require('minimist');
 var path = require('path');
@@ -68,23 +67,17 @@ function getElemsListFromDepsObj(data) {
 
 function getElemsFormDeps(deps) {
     if (!deps) return [];
-    
-    //todo Подумать, как сделать лучше
-    var elemsObj = _.find(deps, 'elems'),
-        singleElems = [],
-        resultElemList = [];
+
+    var elemsList = [];
 
     deps.forEach(function(item){
-        if (item['elem'] && !item['block']) singleElems.push(item['elem']);
+        if (item['block'] && item['block'] !== BEM_INFO.blockName) return;
+
+        if (item['elem']) elemsList.push(item['elem']);
+        if (item['elems']) elemsList = elemsList.concat(item['elems']);
     });
 
-    if (elemsObj) {
-        resultElemList = singleElems.concat(elemsObj['elems']);
-    } else {
-        resultElemList = singleElems;
-    }
-
-    return resultElemList;
+    return elemsList;
 }
 
 function createElemsDir(elemName){

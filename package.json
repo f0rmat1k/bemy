@@ -5,9 +5,8 @@
     "type": "git",
     "url": "git@github.yandex-team.ru:f0rmat1k/BEMe.git"
   },
-  "version": "1.0.4",
+  "version": "1.0.5",
   "dependencies": {
-    "lodash": "^2.4.1",
     "minimist": "^1.1.0"
   }
 }

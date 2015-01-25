@@ -76,7 +76,7 @@ gulp.task('create', function(){
 });
 
 function createElemDirsByDeps(){
-    var file = fs.readFile(trgPath, 'utf-8'),
+    var file = fs.readFileSync(trgPath, 'utf-8'),
         depsObj = depsToObj(file),
         elemsList = getElemsListFromDepsObj(depsObj);
 

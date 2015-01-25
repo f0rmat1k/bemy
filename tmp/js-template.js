@@ -1,12 +1,12 @@
 BEM.DOM.decl('{{blockName}}{{elemName}}{{modName}}', {
     onSetMod: {
         js: function () {
-            this.collectElems();
+            this.collectData();
             this.bindEvents();
         }
     },
 
-    collectElems: function () {
+    collectData: function () {
 
     },
 

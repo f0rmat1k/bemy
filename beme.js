@@ -7,9 +7,10 @@ var exec = require('child_process').exec;
 
 var options = minimist(process.argv.slice(2)),
     trgPath = options.f,
+    configPath = options.c || 'config.json',
     prompt = typeof options.p === 'string' ? options.p.split(' ') : null,
     BEM_INFO = require('./bem-info.js')(trgPath),
-    config = JSON.parse(fs.readFileSync('config.json', 'utf-8'));
+    config = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
 
 var SUFFIXES = config.suffixes,
     FILE_TEMPLATES = config['file-templates'],

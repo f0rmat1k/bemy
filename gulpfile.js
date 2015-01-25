@@ -1,18 +1,16 @@
+// TODO PATH JOIN
+
 var gulp = require('gulp');
-var _ = require('lodash');
-var Promise = require('bluebird');
+var _ = require('lodash'); // todo
 var fs = require('fs');
-var mkdirp = require('mkdirp');
 var minimist = require('minimist');
 var path = require('path');
-
-Promise.promisifyAll(mkdirp);
-Promise.promisifyAll(fs);
 
 var options = minimist(process.argv.slice(2)),
     trgPath = options.f;
     prompt = typeof options.p === 'string' ? options.p.split(' ') : null;
 
+// todo write to blond (bem-walk)
 var BEM_INFO = function(){
     var info = {};
 
@@ -20,14 +18,18 @@ var BEM_INFO = function(){
     info.type = getTargetTypeByStat(info.stat);
     info.isDir = info.stat.isDirectory();
     info.isFile = info.stat.isFile();
-    info.dirName = getDirName(info);
-    info.isBlock = isBlock(info);
-    info.isElem = isElem(info);
-    info.isMod = isMod(info);
-    info.blockName = getBlockName(null, info);
-    info.elemName = getElemName(info);
-    info.modName = getModName(info);
-    info.bemName = getBemName(info);
+    info.dirName = getDirNameByPath(trgPath);
+
+    if (!info.isFile) {
+        info.isBlock = isBlock();
+        info.isElem = isElem();
+        info.isMod = isMod();
+    }
+
+    info.blockName = getBlockName(null, info.isBlock);
+    info.elemName = getElemName(info.isElem, info.isMod, info.dirName);
+    info.modName = getModName(info.isMod, info.dirName);
+    info.bemName = getBemName(info.blockName, info.elemName, info.modName);
 
     return info;
 }();
@@ -65,66 +67,55 @@ var DEFAULT_ACTIONS = {
     };
 
 gulp.task('default', function(){
-    chooseActionByDefault();
+    DEFAULT_ACTIONS[BEM_INFO.type]();
 });
 
 gulp.task('create', function(){
+    // todo
     startCreating(prompt);
 });
 
 function createElemDirsByDeps(){
-    fs.readFileAsync(trgPath, 'utf-8')
-        .then(depsToObj)
-        .then(getElemsListFromDepsObj)
-        .map(createElemsDirs);
+    var file = fs.readFile(trgPath, 'utf-8'),
+        depsObj = depsToObj(file),
+        elemsList = getElemsListFromDepsObj(depsObj);
+
+    createElemsDirs(elemsList);
 }
 
-function getBemName(info){
-    return info.blockName + info.elemName + info.modName;
+function getBemName(blockName, elemName, modName){
+    return blockName + elemName + modName;
 }
 
-function getDirName(info){
-    if (info && info.isDir) {
-        return getDirNameByPath(trgPath);
-    }
+function isBlock(){
+    return /\/[^_][-a-z0-9]+$/i.test(trgPath);
 }
 
-function isBlock(info){
-    if (info && info.isFile) return;
-
-    var isBlock = /\/[^_][-a-z0-9]+$/i.test(trgPath);
-    return isBlock || false;
-}
-
-function isElem(info){
-    if (info && info.isFile) return;
+function isElem(){
     return /__[-a-z0-9]+$/ig.test(trgPath);
 }
 
-function isMod(info){
-    if (info && info.isFile) return;
-
+function isMod(){
     return /\/_[-a-z0-9]+$/ig.test(trgPath);
 }
 
-function getBlockName(targetPath, info){
+function getBlockName(targetPath, isBlock){
     targetPath = targetPath || trgPath;
 
-    if (info && info.isBlock) return targetPath.match(/[-a-z0-9]+$/i)[0];
+    if (isBlock) return targetPath.match(/[-a-z0-9]+$/i)[0];
 
     var dirName = path.dirname(targetPath),
-    baseName = path.basename(dirName);
+        baseName = path.basename(dirName);
 
-    if (/_/g.test(baseName)) {
-        return getBlockName(path.resolve(targetPath, '../'));
-    } else {
-        return baseName;
-    }
+    if (/_/g.test(baseName)) return getBlockName(path.resolve(targetPath, '../'));
+
+    return baseName;
 }
 
-function getElemName(info){
-    if (info.isElem) return info.dirName;
-    if (info.isMod) {
+function getElemName(isElem, isMod, dirName){
+    if (isElem) return dirName;
+
+    if (isMod) {
         var parentDir = path.basename(path.resolve(trgPath, '../')),
             parentIsElem = /^(__)/ig.test(parentDir);
         if (parentIsElem) return parentDir;
@@ -133,15 +124,13 @@ function getElemName(info){
     return '';
 }
 
-function getModName(info){
-    if (info.isMod) return info.dirName;
-    return '';
+function getModName(isMod, dirName){
+    return isMod ? dirName : '';
 }
 
+// todo
 function startCreating(fileTypes){
-    return fileTypes.forEach(function(fileType){
-        return createFileFromTemplate(fileType);
-    });
+    return fileTypes.forEach(createFileFromTemplate);
 }
 
 function createFileFromTemplate(fileType){
@@ -159,22 +148,14 @@ function insertName(file){
 }
 
 function getTargetTypeByStat(stat){
-    if (stat.isFile()) {
-        return detectFileType(trgPath);
-    } else if (stat.isDirectory()) {
-        return detectDirType(trgPath);
-    }
+    return stat.isFile() ? detectFileType(trgPath) : detectDirType(trgPath);
 }
 
 function detectFileType(targetFile) {
     var filename = path.basename(targetFile),
         fileType;
 
-    switch (true) {
-        case /\.deps\./.test(filename):
-            fileType = 'depsFile';
-            break;
-    }
+    if (/\.deps\./.test(filename)) fileType = 'depsFile';
 
     return fileType;
 }
@@ -183,23 +164,13 @@ function detectDirType(targetDir){
     var dirName = path.basename(targetDir),
         dirType;
 
-    switch (true) {
-        case /^__/.test(dirName):
-            dirType = 'elemDir';
-            break;
-        case /^_/.test(dirName):
-            dirType = 'modDir';
-            break;
-
-        default:
-            dirType = 'blockDir';
-    }
+    if (/^__/.test(dirName)) {
+        dirType = 'elemDir';
+    } else if (/^_/.test(dirName)) {
+        dirType = 'modDir';
+    } else dirType = 'blockDir';
 
     return dirType;
-}
-
-function chooseActionByDefault(){
-    DEFAULT_ACTIONS[BEM_INFO.type]();
 }
 
 function depsToObj(data){
@@ -236,7 +207,7 @@ function getElemsFormDeps(deps) {
 
 function createElemsDirs(elemName){
     var blockDir = path.dirname(trgPath);
-    return mkdirp.mkdirpAsync(blockDir + '/__' + elemName);
+    fs.mkdirSync(blockDir + '/__' + elemName);
 }
 
 function createFile(file, type, path){
@@ -248,6 +219,6 @@ function getTemplate(tmpName){
     return fs.readFileSync('tmp/' + tmpName, 'utf-8');
 }
 
-function getDirNameByPath(path){
-    return path.match(/[-a-z0-9_]+$/ig)[0];
+function getDirNameByPath(p){
+    return path.basename(p);
 }

@@ -1,36 +1,38 @@
 BEMe
 ==================
 
-Helper for auto-creation BEM dir and file structure
+Хэлпер для автогенерации файловой структуры BEM с помоью командной строки.
 
-Installation
+Установка
 ==
 npm i beme  
-Global gulp needs: npm i gulp -g
+Требуется глобально установленный gulp: npm i gulp -g
 
-Usage
+Использование
 ==
-[default-action]: gulp -f ./test/test.deps.js  
-[rename]: gulp rename -f ./test/__lol -p newElemName
 
-Usage with Webstorm
-==
-Add external tool:
+Задача создания  
+Принимает набор аргументов в виде типов файлов (или их сокращений) и создает файлы, используя шаблоны в поставке тулзы.
 
-For default task:  
-program: gulp  
-parameters: -f $FilePath$  
-working directory: [path to BEMe, e.g. /Users/f0rmat1k/node_modules/beme]
+Интерфейс командной строки  
+gulp create -f [file path] -p "[file types]", где file path — это путь к БЕМ-сущности, file types — строка, содержащая типы файлов для создания в виде сокращений с разделением через пробел.  
+Пример: gulp create -f ~/testBlock/__elem -p "css js" приведет к тому, что в ~/testBlock/__elem появятся 2 файла: testBlock__elem.js и testBlock__elem.css.
 
-And hotkey, e.g. ctrl + A.
+Реплейсы шаблонов  
+При создании файлов БЕМ-сущностей в шаблонах вхождения {{blockName}}, {{elemName}}, {{modName}} будут заменены на соответствующие сущности имена. Дефолтный шаблон css-файла содержит .{{blockName}}{{elemName}}{{modName}} {}, таким образом результирующий css-файл из примера выше будет содержать .testBlock__elem {}.
 
-Default behavior:  
-select dir __elem + [ctrl + A] => [new file] block__elem.css  
-select file *.deps.js + [ctrl + A] => [new dir] __elem, [mkdir] __elem, ..
+Пример настройки автотаски для webstorm через external tools:  
+![](http://jing.yandex-team.ru/files/f0rmat1k/2015-01-25_1632.png)  
+Для большего удобства можно настроить hotkey для запуска задачи. Рекомендуемое сочетание [ctrl + c] (c в контексте create). Настраивается в keymap.
 
-For create task:  
-program: gulp  
-parameters: create -f $FilePath$ -p "$Prompt$"  
-working directory: [path to BEMe, e.g. /Users/f0rmat1k/node_modules/beme]
+Автозадача  
+Вызывает действите по-умолчанию относительно BEM-сущности. В данный момент работают следующие вещи следующим образом:  
+1. Если целью яляется каталог блока, элемента или модификатора, то запускается задача создания с единственным типов файла — css.
+2. !Эксперементально: Если целью является deps-файл, то создается набор пустых каталогов всех элементов блока.
 
-Deep block renaming coming soon..
+Интерфейс командной строки:  
+gulp -f [FilePath], где FilePath — это путь к бем-сущности  
+
+Пример настройки автотаски для webstorm через external tools:  
+![](http://jing.yandex-team.ru/files/f0rmat1k/2015-01-25_1504.png)  
+Для большего удобства можно настроить hotkey для запуска задачи. Рекомендуемое сочетание [ctrl + a] (c в контексте automatic). Настраивается в keymap.

@@ -1,28 +1,29 @@
+'use strict';
+
 var _ = require('lodash'); // todo
 var fs = require('fs');
 var minimist = require('minimist');
 var path = require('path');
+var exec = require('child_process').exec;
 
 var options = minimist(process.argv.slice(2)),
-    trgPath = options.f;
-    prompt = typeof options.p === 'string' ? options.p.split(' ') : null;
-
-var BEM_INFO = require('./bem-info.js')(trgPath);
+    trgPath = options.f,
+    prompt = typeof options.p === 'string' ? options.p.split(' ') : null,
+    BEM_INFO = require('./bem-info.js')(trgPath);
 
 var SUFFIXES = {
-    css: '.css',
-    c: '.css',
-    js: '.js',
-    j: '.js',
-    deps: '.deps.js',
-    d: '.deps.js',
-    bh: '.bh.js',
-    b: '.bh.js',
-    priv: '.priv.js',
-    p: '.priv.js'
-};
-
-var DEFAULT_ACTIONS = {
+        css: '.css',
+        c: '.css',
+        js: '.js',
+        j: '.js',
+        deps: '.deps.js',
+        d: '.deps.js',
+        bh: '.bh.js',
+        b: '.bh.js',
+        priv: '.priv.js',
+        p: '.priv.js'
+    },
+    DEFAULT_ACTIONS = {
         blockDir: startCreating.bind(null, ['css']),
         depsFile: createElemDirsByDeps,
         elemDir: startCreating.bind(null, ['css']),
@@ -39,12 +40,11 @@ var DEFAULT_ACTIONS = {
         d: 'deps-template.js',
         priv: 'priv-template.js',
         p: 'priv-template.js'
+    },
+    tasks = {
+        auto: DEFAULT_ACTIONS[BEM_INFO.type],
+        create: startCreating.bind(this, prompt)
     };
-
-var tasks = {
-    auto: DEFAULT_ACTIONS[BEM_INFO.type],
-    create: startCreating.bind(this, prompt)
-};
 
 tasks[options.t]();
 
@@ -116,8 +116,18 @@ function createFile(file, type, p){
     p = path.join((p || trgPath), BEM_INFO.bemName + SUFFIXES[type]);
 
     fs.writeFileSync(p, file);
+
+    if (options.g) {
+        gitAdd(p);
+    }
 }
 
 function getTemplate(tmpName){
     return fs.readFileSync(path.join('tmp', tmpName), 'utf-8');
+}
+
+function gitAdd(p){
+    exec('cd ' + trgPath + ' && git add ' + p, function (error, stdout, stderr) {
+        if (stderr) console.log(stderr);
+    });
 }

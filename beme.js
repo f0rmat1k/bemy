@@ -1,5 +1,3 @@
-// TODO PATH JOIN
-
 var _ = require('lodash'); // todo
 var fs = require('fs');
 var minimist = require('minimist');
@@ -58,7 +56,6 @@ function createElemDirsByDeps(){
     elemsList.forEach(createElemsDir);
 }
 
-
 // todo
 function startCreating(fileTypes){
     return fileTypes.forEach(createFileFromTemplate);
@@ -79,7 +76,7 @@ function insertName(file){
 }
 
 function depsToObj(data){
-    return (0, eval(data));
+    return eval(data);
 }
 
 function getElemsListFromDepsObj(data) {
@@ -112,15 +109,15 @@ function getElemsFormDeps(deps) {
 
 function createElemsDir(elemName){
     var blockDir = path.dirname(trgPath);
-    fs.mkdirSync(blockDir + '/__' + elemName);
+    fs.mkdirSync(path.join(blockDir, '__' + elemName));
 }
 
-function createFile(file, type, path){
-    path = (path || trgPath) + '/' + BEM_INFO.bemName + SUFFIXES[type];
-    fs.writeFileSync(path, file);
+function createFile(file, type, p){
+    p = path.join((p || trgPath), BEM_INFO.bemName + SUFFIXES[type]);
+
+    fs.writeFileSync(p, file);
 }
 
 function getTemplate(tmpName){
-    return fs.readFileSync('tmp/' + tmpName, 'utf-8');
+    return fs.readFileSync(path.join('tmp', tmpName), 'utf-8');
 }
-

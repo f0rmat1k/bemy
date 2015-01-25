@@ -9,7 +9,6 @@ BEMe
 npm i gulp -g #Требуется глобально установленный gulp
 npm i beme
 ```
-
 Использование
 ==
 Задача создания  
@@ -20,7 +19,19 @@ npm i beme
 Пример: `gulp create -f ~/testBlock/__elem -p "css js"` приведет к тому, что в `~/testBlock/__elem` появятся 2 файла: `testBlock__elem.js` и `testBlock__elem.css`.
 
 Реплейсы шаблонов  
-При создании файлов БЕМ-сущностей в шаблонах вхождения `{{blockName}}`, `{{elemName}}`, `{{modName}}` будут заменены на соответствующие сущности имена. Дефолтный шаблон css-файла содержит `.{{blockName}}{{elemName}}{{modName}} {}`, таким образом результирующий css-файл из примера выше будет содержать `.testBlock__elem {}`.
+При создании файлов БЕМ-сущностей в шаблонах вхождения `{{blockName}}`, `{{elemName}}`, `{{modName}}` будут заменены на соответствующие сущности имена. Дефолтный шаблон css-файла содержит
+```css
+.{{blockName}}{{elemName}}{{modName}}
+{
+   
+}
+```
+, таким образом результирующий css-файл из примера выше будет содержать `.testBlock__elem {}`.
+```css
+.testBlock__elem {
+   
+}
+```
 
 Пример настройки задачи создания для webstorm через external tools:  
 ![](http://jing.yandex-team.ru/files/f0rmat1k/2015-01-25_1632.png)  

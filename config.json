@@ -1,0 +1,26 @@
+{
+  "suffixes": {
+    "css": ".css",
+    "c": ".css",
+    "js": ".js",
+    "j": ".js",
+    "deps": ".deps.js",
+    "d": ".deps.js",
+    "bh": ".bh.js",
+    "b": ".bh.js",
+    "priv": ".priv.js",
+    "p": ".priv.js"
+  },
+  "file-templates": {
+    "js": "js-template.js",
+    "j": "js-template.js",
+    "css": "css-template.css",
+    "c": "css-template.css",
+    "bh": "bh-template.js",
+    "b": "bh-template.js",
+    "deps": "deps-template.js",
+    "d": "deps-template.js",
+    "priv": "priv-template.js",
+    "p": "priv-template.js"
+  }
+}

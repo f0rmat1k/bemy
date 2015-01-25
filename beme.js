@@ -1,6 +1,6 @@
 'use strict';
 
-var _ = require('lodash'); // todo
+var _ = require('lodash'); //todo
 var fs = require('fs');
 var minimist = require('minimist');
 var path = require('path');
@@ -9,37 +9,16 @@ var exec = require('child_process').exec;
 var options = minimist(process.argv.slice(2)),
     trgPath = options.f,
     prompt = typeof options.p === 'string' ? options.p.split(' ') : null,
-    BEM_INFO = require('./bem-info.js')(trgPath);
+    BEM_INFO = require('./bem-info.js')(trgPath),
+    config = JSON.parse(fs.readFileSync('config.json', 'utf-8'));
 
-var SUFFIXES = {
-        css: '.css',
-        c: '.css',
-        js: '.js',
-        j: '.js',
-        deps: '.deps.js',
-        d: '.deps.js',
-        bh: '.bh.js',
-        b: '.bh.js',
-        priv: '.priv.js',
-        p: '.priv.js'
-    },
+var SUFFIXES = config.suffixes,
+    FILE_TEMPLATES = config['file-templates'],
     DEFAULT_ACTIONS = {
         blockDir: startCreating.bind(null, ['css']),
         depsFile: createElemDirsByDeps,
         elemDir: startCreating.bind(null, ['css']),
         modDir: startCreating.bind(null, ['css'])
-    },
-    FILE_TEMPLATES = {
-        js: 'js-template.js',
-        j: 'js-template.js',
-        css: 'css-template.css',
-        c: 'css-template.css',
-        bh: 'bh-template.js',
-        b: 'bh-template.js',
-        deps: 'deps-template.js',
-        d: 'deps-template.js',
-        priv: 'priv-template.js',
-        p: 'priv-template.js'
     },
     tasks = {
         auto: DEFAULT_ACTIONS[BEM_INFO.type],

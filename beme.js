@@ -97,9 +97,7 @@ function createFile(file, type){
 
     fs.writeFileSync(p, file);
 
-    if (options.g) {
-        gitAddTrg();
-    }
+    if (options.g) gitAddTrg();
 }
 
 function getTemplate(tmpPath){

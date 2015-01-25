@@ -12,15 +12,15 @@
     "p": ".priv.js"
   },
   "file-templates": {
-    "js": "js-template.js",
-    "j": "js-template.js",
-    "css": "css-template.css",
-    "c": "css-template.css",
-    "bh": "bh-template.js",
-    "b": "bh-template.js",
-    "deps": "deps-template.js",
-    "d": "deps-template.js",
-    "priv": "priv-template.js",
-    "p": "priv-template.js"
+    "js": "tmp/js-template.js",
+    "j": "tmp/js-template.js",
+    "css": "tmp/css-template.css",
+    "c": "tmp/css-template.css",
+    "bh": "tmp/bh-template.js",
+    "b": "tmp/bh-template.js",
+    "deps": "tmp/deps-template.js",
+    "d": "tmp/deps-template.js",
+    "priv": "tmp/priv-template.js",
+    "p": "tmp/priv-template.js"
   }
 }

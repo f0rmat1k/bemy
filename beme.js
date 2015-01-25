@@ -25,7 +25,8 @@ var SUFFIXES = config.suffixes,
         create: startCreating.bind(this, prompt)
     };
 
-tasks[options.t]();
+var task = options.t || 'auto';
+tasks[task]();
 
 function createElemDirsByDeps(){
     var file = fs.readFileSync(trgPath, 'utf-8'),
@@ -41,8 +42,8 @@ function startCreating(fileTypes){
 }
 
 function createFileFromTemplate(fileType){
-    var tmp = FILE_TEMPLATES[fileType],
-        file = insertName(getTemplate(tmp));
+    var tmpPath = FILE_TEMPLATES[fileType],
+        file = insertName(getTemplate(tmpPath));
 
     createFile(file, fileType);
 }
@@ -101,8 +102,8 @@ function createFile(file, type){
     }
 }
 
-function getTemplate(tmpName){
-    return fs.readFileSync(path.join('tmp', tmpName), 'utf-8');
+function getTemplate(tmpPath){
+    return fs.readFileSync(tmpPath, 'utf-8');
 }
 
 function gitAddTrg(){

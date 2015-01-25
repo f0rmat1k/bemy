@@ -69,6 +69,7 @@ function getElemsListFromDepsObj(data) {
 function getElemsFormDeps(deps) {
     if (!deps) return [];
 
+    console.log(deps);
     //todo Подумать, как сделать лучше
     var elemsObj = _.find(deps, 'elems'),
         singleElems = [],
@@ -88,8 +89,10 @@ function getElemsFormDeps(deps) {
 }
 
 function createElemsDir(elemName){
-    var blockDir = path.dirname(trgPath);
-    fs.mkdirSync(path.join(blockDir, '__' + elemName));
+    var blockDir = path.dirname(trgPath),
+        p = path.join(blockDir, '__' + elemName);
+
+    if (!fs.existsSync(p)) fs.mkdirSync(p);
 }
 
 function createFile(file, type){

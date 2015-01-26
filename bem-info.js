@@ -3,7 +3,6 @@ var path = require('path');
 
 // todo write to blond (bem-walk)
 module.exports = function(trgPath){
-    console.log(trgPath);
     var info = {};
 
     info.stat = fs.statSync(trgPath);

@@ -4,21 +4,23 @@ var fs = require('fs');
 var minimist = require('minimist');
 var path = require('path');
 var exec = require('child_process').exec;
+var depsNormalize = require('/Users/f0rmat1k/projects/deps-normalize');
 
 var options = minimist(process.argv.slice(2)),
     trgPath = options.f,
     configPath = options.c || 'config.json',
     prompt = typeof options.p === 'string' ? options.p.split(' ') : null,
-    BEM_INFO = require('./bem-info.js')(trgPath),
+    bemInfo = require('./bem-info.js'),
     config = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
 
-var SUFFIXES = config.suffixes,
+var BEM_INFO = bemInfo(trgPath),
+    SUFFIXES = config.suffixes,
     FILE_TEMPLATES = config['file-templates'],
     DEFAULT_ACTIONS = {
-        blockDir: startCreating.bind(null, ['css']),
-        depsFile: createElemDirsByDeps,
-        elemDir: startCreating.bind(null, ['css']),
-        modDir: startCreating.bind(null, ['css'])
+        blockDir: startCreating.bind(this, ['css']),
+        depsFile: createStructureByDeps,
+        elemDir: startCreating.bind(this, ['css']),
+        modDir: startCreating.bind(this, ['css'])
     },
     tasks = {
         auto: DEFAULT_ACTIONS[BEM_INFO.type],
@@ -28,80 +30,101 @@ var SUFFIXES = config.suffixes,
 var task = options.t || 'auto';
 tasks[task]();
 
-function createElemDirsByDeps(){
-    var file = fs.readFileSync(trgPath, 'utf-8'),
-        depsObj = depsToObj(file),
-        elemsList = getElemsListFromDepsObj(depsObj);
-
-    elemsList.forEach(createElemsDir);
-}
-
 // todo
 function startCreating(fileTypes){
     return fileTypes.forEach(createFileFromTemplate);
 }
 
-function createFileFromTemplate(fileType){
-    var tmpPath = FILE_TEMPLATES[fileType],
-        file = insertName(getTemplate(tmpPath));
+function createFileFromTemplate(fileType, trg){
+    trg = trg || trgPath;
 
-    createFile(file, fileType);
+    var tmpPath = FILE_TEMPLATES[fileType],
+        file = insertName(getTemplate(tmpPath), trg);
+
+    createFile(file, fileType, trg);
 }
 
-function insertName(file){
+function insertName(file, trg){
+    var info = bemInfo(trg);
     return file
-        .replace(/{{blockName}}/g, BEM_INFO.blockName)
-        .replace(/{{elemName}}/g, BEM_INFO.elemName)
-        .replace(/{{modName}}/g, BEM_INFO.modName);
+        .replace(/{{blockName}}/g, info.blockName)
+        .replace(/{{elemName}}/g, info.elemName)
+        .replace(/{{modName}}/g, info.modName);
+}
+
+function createStructureByDeps(){
+    var file = fs.readFileSync(trgPath, 'utf-8'),
+        depsObj = depsToObj(file),
+        structureList = getNormalaizedDeps(depsObj);
+
+    structureList.forEach(createNode);
+}
+
+function createNode(nodeObj, trg){
+    if (nodeObj['block'] && nodeObj['block'] !== BEM_INFO.blockName) return;
+
+    var blockDir = path.dirname(trgPath),
+        nodePath,
+        fileTypes = config.deps_task ? config.deps_task.files : [];
+
+    if (nodeObj.elem) {
+        nodePath = path.join(blockDir, '__' + nodeObj.elem);
+
+        if (!fs.existsSync(nodePath)) {
+            fs.mkdirSync(nodePath);
+
+            fileTypes.forEach(function(type){
+                createFileFromTemplate(type, nodePath);
+            });
+        }
+
+        if (nodeObj.modName) {
+            nodePath = path.join(nodePath, '_' + nodeObj.modName);
+            fs.mkdirSync(nodePath);
+
+            fileTypes.forEach(function(type){
+                createFileFromTemplate(type, nodePath);
+            });
+        }
+    } else {
+        nodePath = path.join(blockDir, '_' + nodeObj.modName);
+        if (!fs.existsSync(nodePath)) {
+            fs.mkdirSync(nodePath);
+
+            fileTypes.forEach(function(type){
+                createFileFromTemplate(type, nodePath);
+            });
+        }
+    }
 }
 
 function depsToObj(data){
     return eval(data);
 }
 
-function getElemsListFromDepsObj(data) {
-    var mustElems = getElemsFormDeps(data.mustDeps),
-        shouldElems = getElemsFormDeps(data.shouldDeps);
+function getNormalaizedDeps(data) {
+    var mustDeps = depsNormalize(data.mustDeps),
+        shouldDeps = depsNormalize(data.shouldDeps);
 
-    return mustElems.concat(shouldElems);
+    return mustDeps.concat(shouldDeps);
 }
 
-function getElemsFormDeps(deps) {
-    if (!deps) return [];
-
-    var elemsList = [];
-
-    deps.forEach(function(item){
-        if (item['block'] && item['block'] !== BEM_INFO.blockName) return;
-
-        if (item['elem']) elemsList.push(item['elem']);
-        if (item['elems']) elemsList = elemsList.concat(item['elems']);
-    });
-
-    return elemsList;
-}
-
-function createElemsDir(elemName){
-    var blockDir = path.dirname(trgPath),
-        p = path.join(blockDir, '__' + elemName);
-
-    if (!fs.existsSync(p)) fs.mkdirSync(p);
-}
-
-function createFile(file, type){
-    var p = path.join(trgPath, BEM_INFO.bemName + SUFFIXES[type]);
+function createFile(file, type, trg){
+    trg = trg || trgPath;
+    var info = bemInfo(trg),
+        p = path.join(trg, info.bemName + SUFFIXES[type]);
 
     fs.writeFileSync(p, file);
 
-    if (options.g) gitAddTrg();
+    if (options.g) gitAddTrg(trg, p);
 }
 
 function getTemplate(tmpPath){
     return fs.readFileSync(tmpPath, 'utf-8');
 }
 
-function gitAddTrg(){
-    exec('cd ' + trgPath + ' && git add ' + trgPath, function (error, stdout, stderr) {
+function gitAddTrg(dir, file){
+    exec('cd ' + dir + ' && git add ' + file, function (error, stdout, stderr) {
         if (stderr) console.log(stderr);
     });
 }

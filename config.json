@@ -22,8 +22,5 @@
     "d": "tmp/deps-template.js",
     "priv": "tmp/priv-template.js",
     "p": "tmp/priv-template.js"
-  },
-  "deps_task": {
-    "files": [ "css" ]
   }
 }

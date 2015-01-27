@@ -35,21 +35,22 @@ function startCreating(fileTypes){
     return fileTypes.forEach(createFileFromTemplate);
 }
 
-function createFileFromTemplate(fileType, trg){
+function createFileFromTemplate(fileType, trg, modVal){
     trg = trg || trgPath;
 
     var tmpPath = FILE_TEMPLATES[fileType],
-        file = insertName(getTemplate(tmpPath), trg);
+        file = insertName(getTemplate(tmpPath), trg, modVal);
 
-    createFile(file, fileType, trg);
+    createFile(file, fileType, trg, modVal);
 }
 
-function insertName(file, trg){
+function insertName(file, trg, modVal){
     var info = bemInfo(trg);
     return file
         .replace(/{{blockName}}/g, info.blockName)
         .replace(/{{elemName}}/g, info.elemName)
-        .replace(/{{modName}}/g, info.modName);
+        .replace(/{{modName}}/g, info.modName)
+        .replace(/{{modVal}}/g, modVal);
 }
 
 function createStructureByDeps(){
@@ -65,7 +66,9 @@ function createNode(nodeObj, trg){
 
     var blockDir = path.dirname(trgPath),
         nodePath,
-        fileTypes = config.deps_task ? config.deps_task.files : [];
+        fileTypes = config.deps_task ? config.deps_task.files : [],
+    //todo
+    modVal = nodeObj.modVal ? '_' + nodeObj.modVal : '';
 
     if (nodeObj.elem) {
         nodePath = path.join(blockDir, '__' + nodeObj.elem);
@@ -74,16 +77,19 @@ function createNode(nodeObj, trg){
             fs.mkdirSync(nodePath);
 
             fileTypes.forEach(function(type){
-                createFileFromTemplate(type, nodePath);
+                createFileFromTemplate(type, nodePath, modVal);
             });
         }
 
         if (nodeObj.modName) {
             nodePath = path.join(nodePath, '_' + nodeObj.modName);
-            fs.mkdirSync(nodePath);
+
+            if (!fs.existsSync(nodePath)) {
+                fs.mkdirSync(nodePath);
+            }
 
             fileTypes.forEach(function(type){
-                createFileFromTemplate(type, nodePath);
+                createFileFromTemplate(type, nodePath, modVal);
             });
         }
     } else {
@@ -92,7 +98,7 @@ function createNode(nodeObj, trg){
             fs.mkdirSync(nodePath);
 
             fileTypes.forEach(function(type){
-                createFileFromTemplate(type, nodePath);
+                createFileFromTemplate(type, nodePath, modVal);
             });
         }
     }
@@ -109,10 +115,12 @@ function getNormalaizedDeps(data) {
     return mustDeps.concat(shouldDeps);
 }
 
-function createFile(file, type, trg){
+function createFile(file, type, trg, modVal){
     trg = trg || trgPath;
+    modVal = modVal || '';
+
     var info = bemInfo(trg),
-        p = path.join(trg, info.bemName + SUFFIXES[type]);
+        p = path.join(trg, info.bemName + modVal + SUFFIXES[type]);
 
     fs.writeFileSync(p, file);
 

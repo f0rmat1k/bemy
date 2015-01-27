@@ -3,9 +3,9 @@
   "description": "Helper for auto-creation BEM dir and file structure",
   "repository": {
     "type": "git",
-    "url": "git@github.yandex-team.ru:f0rmat1k/BEMe.git"
+    "url": "git@github.yandex-team.ru:f0rmat1k/bemy.git"
   },
-  "version": "1.1.4",
+  "version": "1.2.0",
   "dependencies": {
     "deps-normalize": "^2.3.0",
     "minimist": "^1.1.0"

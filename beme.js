@@ -4,7 +4,7 @@ var fs = require('fs');
 var minimist = require('minimist');
 var path = require('path');
 var exec = require('child_process').exec;
-var depsNormalize = require('/Users/f0rmat1k/projects/deps-normalize');
+var depsNormalize = require('deps-normalize');
 
 var options = minimist(process.argv.slice(2)),
     trgPath = options.f,

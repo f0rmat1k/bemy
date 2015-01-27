@@ -32,7 +32,9 @@ tasks[task]();
 
 // todo
 function startCreating(fileTypes){
-    return fileTypes.forEach(createFileFromTemplate);
+    return fileTypes.forEach(function(fileType){
+        createFileFromTemplate(fileType);
+    });
 }
 
 function createFileFromTemplate(fileType, trg, modVal){
@@ -46,11 +48,12 @@ function createFileFromTemplate(fileType, trg, modVal){
 
 function insertName(file, trg, modVal){
     var info = bemInfo(trg);
+
     return file
         .replace(/{{blockName}}/g, info.blockName)
         .replace(/{{elemName}}/g, info.elemName)
         .replace(/{{modName}}/g, info.modName)
-        .replace(/{{modVal}}/g, modVal);
+        .replace(/{{modVal}}/g, modVal || '');
 }
 
 function createStructureByDeps(){

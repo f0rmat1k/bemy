@@ -39,7 +39,7 @@ npm i bemy
 ```
 
 Пример настройки задачи создания для `webstorm` через `external tools`:  
-![](http://jing.yandex-team.ru/files/f0rmat1k/2015-01-25_2123.png)  
+![](http://jing.yandex-team.ru/files/f0rmat1k/2015-01-27_1619.png)  
 Для большего удобства можно настроить hotkey для запуска задачи. Рекомендуемое сочетание `ctrl + c` ('c' в контексте create). Настраивается в keymap.
 
 ###Автозадача  
@@ -51,7 +51,7 @@ npm i bemy
 `node bemy.js -f [file path]`, где `file path` — это путь к бем-сущности  
 
 Пример настройки автозадачи для `webstorm` через `external tools`:  
-![](http://jing.yandex-team.ru/files/f0rmat1k/2015-01-25_2124.png)  
+![](http://jing.yandex-team.ru/files/f0rmat1k/2015-01-27_1617.png)  
 Для большего удобства можно настроить hotkey для запуска задачи. Рекомендуемое сочетание `ctrl + a` ('a' в контексте automatic). Настраивается в keymap.
 
 ###Конфигурирование

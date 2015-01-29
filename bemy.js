@@ -112,8 +112,8 @@ function depsToObj(data){
 }
 
 function getNormalaizedDeps(data) {
-    var mustDeps = depsNormalize(data.mustDeps),
-        shouldDeps = depsNormalize(data.shouldDeps);
+    var mustDeps = depsNormalize(data.mustDeps, { parseString: parseString }),
+        shouldDeps = depsNormalize(data.shouldDeps, { parseString: parseString });
 
     return mustDeps.concat(shouldDeps);
 }
@@ -138,4 +138,20 @@ function gitAddTrg(dir, file){
     exec('cd ' + dir + ' && git add ' + file, function (error, stdout, stderr) {
         if (stderr) console.log(stderr);
     });
+}
+
+function parseString(dep) {
+    var obj = {};
+
+    var block = (dep.match(/[-a-z0-9]+/i) || [])[0],
+        elem = (dep.match(/^[-a-z0-9]+__([-a-z0-9]+)/i) || [])[1],
+        modName = (dep.match(/^[-a-z0-9]+__[-a-z0-9]+_([-a-z0-9]+)/i) || [])[1],
+        modVal = (dep.match(/^[-a-z0-9]+__[-a-z0-9]+_[-a-z0-9]+_([-a-z0-9]+)$/i) || [])[1];
+
+    block && (obj['block'] = block);
+    elem && (obj['elem'] = elem);
+    modName && (obj['modName'] = modName);
+    modVal && (obj['modVal'] = modVal);
+
+    return obj;
 }

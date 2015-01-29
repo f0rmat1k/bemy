@@ -125,7 +125,9 @@ function createFile(file, type, trg, modVal){
     var info = bemInfo(trg),
         p = path.join(trg, info.bemName + modVal + SUFFIXES[type]);
 
-    fs.writeFileSync(p, file);
+    if (!fs.existsSync(p)) {
+        fs.writeFileSync(p, file);
+    }
 
     if (options.g) gitAddTrg(trg, p);
 }

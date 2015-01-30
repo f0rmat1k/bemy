@@ -70,7 +70,7 @@ function createNode(nodeObj, trg){
     var blockDir = path.dirname(trgPath),
         nodePath,
         fileTypes = config.deps_task ? config.deps_task.files : [],
-    //todo
+
     modVal = nodeObj.modVal ? '_' + nodeObj.modVal : '';
 
     if (nodeObj.elem) {

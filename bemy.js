@@ -9,7 +9,7 @@ var depsNormalize = require('deps-normalize');
 var options = minimist(process.argv.slice(2)),
     trgPath = options.f,
     configPath = options.c || 'config.json',
-    prompt = typeof options.p === 'string' ? options.p.split(' ') : null,
+    prompt = options.p.toString().split(/\s/),
     bemInfo = require('./bem-info.js'),
     config = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
 
@@ -24,13 +24,47 @@ var BEM_INFO = bemInfo(trgPath),
     },
     tasks = {
         auto: DEFAULT_ACTIONS[BEM_INFO.type],
-        create: startCreating.bind(this, prompt)
+        create: startCreating.bind(this, prompt),
+        rename: renameBemNode.bind(this, prompt[0])
     };
 
 var task = options.t || 'auto';
 tasks[task]();
 
-// todo
+function renameBemNode(newName){
+    if (!valdateBemName(newName)) {
+        console.error('Invalid name: ' + newName);
+        return;
+    }
+
+    if (BEM_INFO.isBlock) {
+        //rename own files
+        fs.readdirSync(trgPath).forEach(function(node){
+            var nodePath = path.join(trgPath, node);
+            var info = bemInfo(nodePath);
+            if (info.isFile) {
+                var oldFileName = path.basename(nodePath),
+                    newFileName = oldFileName.replace(BEM_INFO.blockName, newName),
+                    newPath = nodePath.replace(oldFileName, newFileName);
+
+                fs.renameSync(nodePath, newPath);
+            }
+        }); 
+
+        //rename block name
+        renameDir(trgPath, newName, BEM_INFO.blockName);
+    }
+}
+
+function renameDir(nodePath, newName, oldName){
+    var newPath = nodePath.replace(oldName, newName);
+    fs.renameSync(nodePath, newPath);
+}
+
+function valdateBemName(name){
+    return !/[^-a-z0-9]/ig.test(name);
+}
+
 function startCreating(fileTypes){
     return fileTypes.forEach(function(fileType){
         createFileFromTemplate(fileType);
@@ -138,7 +172,7 @@ function getTemplate(tmpPath){
 
 function gitAddTrg(dir, file){
     exec('cd ' + dir + ' && git add ' + file, function (error, stdout, stderr) {
-        if (stderr) console.log(stderr);
+        if (stderr) console.error(stderr);
     });
 }
 

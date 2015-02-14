@@ -77,12 +77,13 @@ function getModName(isMod, dirName){
 }
 
 function detectFileType(targetFile) {
-    var filename = path.basename(targetFile),
-        fileType;
+    var filename = path.basename(targetFile);
 
-    if (/\.deps\./.test(filename)) fileType = 'depsFile';
-
-    return fileType;
+    if (/\.deps\./.test(filename)) return 'deps';
+    if (/\.css$/.test(filename)) return 'css';
+    if (/\.priv\.js$/.test(filename)) return 'priv';
+    if (/\.bh\.js$/.test(filename)) return 'bh';
+    if (/\.js$/.test(filename)) return 'js';
 }
 
 function detectDirType(targetDir){

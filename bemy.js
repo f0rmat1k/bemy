@@ -9,7 +9,7 @@ var depsNormalize = require('deps-normalize');
 var options = minimist(process.argv.slice(2)),
     trgPath = options.f,
     configPath = options.c || 'config.json',
-    prompt = options.p.toString().split(/\s/),
+    prompt = options.p ? options.p.toString().split(/\s/) : '',
     bemInfo = require('./bem-info.js'),
     config = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
 
@@ -18,52 +18,17 @@ var BEM_INFO = bemInfo(trgPath),
     FILE_TEMPLATES = config['file-templates'],
     DEFAULT_ACTIONS = {
         blockDir: startCreating.bind(this, ['css']),
-        depsFile: createStructureByDeps,
+        deps: createStructureByDeps,
         elemDir: startCreating.bind(this, ['css']),
         modDir: startCreating.bind(this, ['css'])
     },
     tasks = {
         auto: DEFAULT_ACTIONS[BEM_INFO.type],
-        create: startCreating.bind(this, prompt),
-        rename: renameBemNode.bind(this, prompt[0])
+        create: startCreating.bind(this, prompt)
     };
 
 var task = options.t || 'auto';
 tasks[task]();
-
-function renameBemNode(newName){
-    if (!valdateBemName(newName)) {
-        console.error('Invalid name: ' + newName);
-        return;
-    }
-
-    if (BEM_INFO.isBlock) {
-        //rename own files
-        fs.readdirSync(trgPath).forEach(function(node){
-            var nodePath = path.join(trgPath, node);
-            var info = bemInfo(nodePath);
-            if (info.isFile) {
-                var oldFileName = path.basename(nodePath),
-                    newFileName = oldFileName.replace(BEM_INFO.blockName, newName),
-                    newPath = nodePath.replace(oldFileName, newFileName);
-
-                fs.renameSync(nodePath, newPath);
-            }
-        }); 
-
-        //rename block name
-        renameDir(trgPath, newName, BEM_INFO.blockName);
-    }
-}
-
-function renameDir(nodePath, newName, oldName){
-    var newPath = nodePath.replace(oldName, newName);
-    fs.renameSync(nodePath, newPath);
-}
-
-function valdateBemName(name){
-    return !/[^-a-z0-9]/ig.test(name);
-}
 
 function startCreating(fileTypes){
     return fileTypes.forEach(function(fileType){
@@ -98,7 +63,7 @@ function createStructureByDeps(){
     structureList.forEach(createNode);
 }
 
-function createNode(nodeObj, trg){
+function createNode(nodeObj){
     if (nodeObj['block'] && nodeObj['block'] !== BEM_INFO.blockName) return;
 
     var blockDir = path.dirname(trgPath),
@@ -114,7 +79,7 @@ function createNode(nodeObj, trg){
             fs.mkdirSync(nodePath);
 
             fileTypes.forEach(function(type){
-                createFileFromTemplate(type, nodePath, modVal);
+                createFileFromTemplate(type, nodePath);
             });
         }
 

@@ -24,11 +24,72 @@ var BEM_INFO = bemInfo(trgPath),
     },
     tasks = {
         auto: DEFAULT_ACTIONS[BEM_INFO.type],
-        create: startCreating.bind(this, prompt)
+        create: startCreating.bind(this, prompt),
+        rename: renameBemNode.bind(this, prompt[0], trgPath)
     };
 
 var task = options.t || 'auto';
 tasks[task]();
+
+function renameBemNode(newName, nodePath, basename){
+    if (!valdateBemName(newName)) {
+        console.error('Invalid name: ' + newName);
+        return;
+    }
+
+    var info = bemInfo(nodePath);
+
+    basename = basename || {
+        type: info.type,
+        name : newName
+    };
+
+    if (info.isFile) {
+
+    }
+
+    return;
+
+    var info = bemInfo(nodePath),
+        nodeName;
+
+    if (info.isBlock) {
+        nodeName = info.blockName;
+    } else if (info.isElem) {
+        nodeName = info.elemName
+    } else if (info.isMod) {
+        nodeName = info.modName
+    }
+
+    var nodePath2 = nodePath;
+    //rename own files
+    fs.readdirSync(nodePath2).forEach(function(node){
+
+        var nodePath = path.join(nodePath2, node);
+        var info = bemInfo(nodePath);
+        if (info.isFile) {
+            var oldFileName = path.basename(nodePath),
+                newFileName = oldFileName.replace(BEM_INFO.blockName, newName),
+                newPath = nodePath.replace(oldFileName, newFileName);
+            console.log(newPath);
+            fs.renameSync(nodePath, newPath);
+        } else {
+            renameBemNode(newName, nodePath);
+        }
+    });
+
+    //rename block name
+    //renameDir(nodePath, newName, BEM_INFO.blockName);
+}
+
+function renameDir(nodePath, newName, oldName){
+    var newPath = nodePath.replace(oldName, newName);
+    fs.renameSync(nodePath, newPath);
+}
+
+function valdateBemName(name){
+    return !/[^-a-z0-9]/ig.test(name);
+}
 
 function startCreating(fileTypes){
     return fileTypes.forEach(function(fileType){

@@ -3,7 +3,7 @@
   "description": "Helper for auto-creation BEM dir and file structure",
   "repository": {
     "type": "git",
-    "url": "git@github.yandex-team.ru:online-media/bemy.git"
+    "url": "https://github.com/f0rmat1k/bemy.git"
   },
   "version": "1.2.6",
   "dependencies": {

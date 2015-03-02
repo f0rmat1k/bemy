@@ -9,7 +9,7 @@
   "keywords": [
     "bem",
     "BEM Tools"
-  ]
+  ],
   "dependencies": {
     "deps-normalize": "^2.3.1",
     "minimist": "^1.1.0"

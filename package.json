@@ -6,6 +6,10 @@
     "url": "https://github.com/f0rmat1k/bemy.git"
   },
   "version": "1.2.9",
+  "keywords": [
+    "bem",
+    "BEM Tools"
+  ]
   "dependencies": {
     "deps-normalize": "^2.3.1",
     "minimist": "^1.1.0"

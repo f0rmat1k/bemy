@@ -1,23 +1,21 @@
 var fs = require('fs');
 var path = require('path');
 
-// todo write to blond (bem-walk)
-module.exports = function(trgPath){
+module.exports = function(trgPath, isFile){
     var info = {};
 
-    info.stat = fs.statSync(trgPath);
-    info.type = getTargetTypeByStat(info.stat, trgPath);
-    info.isDir = info.stat.isDirectory();
-    info.isFile = info.stat.isFile();
-    info.dirName = getDirNameByPath(trgPath);
+    try { info.stat = fs.statSync(trgPath); } catch (e) { }
 
-    if (!info.isFile) {
-        info.isBlock = isBlock(trgPath);
-        info.isElem = isElem(trgPath);
-        info.isMod = isMod(trgPath);
-    }
+    info.isFile = info.stat && info.stat.isFile() || isFile;
+    info.isDir = info.stat && info.stat.isDirectory() || !info.isFile;
+    info.type = getTargetType(info.isFile, trgPath);
+    info.dirName = getDirNameByPath(trgPath, info.isFile);
 
-    info.blockName = getBlockName(trgPath, info.isBlock);
+    info.isBlock = isBlock(info.dirName);
+    info.isElem = isElem(info.dirName);
+    info.isMod = isMod(info.dirName);
+
+    info.blockName = getBlockName(trgPath, info.isBlock, info.isFile);
     info.elemName = getElemName(info.isElem, info.isMod, info.dirName, trgPath);
     info.modName = getModName(info.isMod, info.dirName);
     info.bemName = getBemName(info.blockName, info.elemName, info.modName);
@@ -25,32 +23,33 @@ module.exports = function(trgPath){
     return info;
 };
 
-function getTargetTypeByStat(stat, trgPath){
-    return stat.isFile() ? detectFileType(trgPath) : detectDirType(trgPath);
+function getTargetType(isFile, trgPath){
+    return isFile ? detectFileType(trgPath) : detectDirType(trgPath);
 }
 
-function getDirNameByPath(p){
-    return path.basename(p);
+function getDirNameByPath(p, isFile){
+    return isFile ? path.basename(path.dirname(p)) : path.basename(p);
 }
 
-function isBlock(trgPath){
-    return /\/[^_][-a-z0-9]+$/i.test(trgPath);
+function isBlock(dirName){
+    return !/^_/i.test(dirName);
 }
 
-function isElem(trgPath){
-    return /__[-a-z0-9]+$/ig.test(trgPath);
+function isElem(dirName){
+    return /^(__)[-a-z0-9]+\/?$/ig.test(dirName);
 }
 
 function isMod(trgPath){
-    return /\/_[-a-z0-9]+$/ig.test(trgPath);
+    return /^_[-a-z0-9]+$/ig.test(trgPath);
 }
 
 function getBemName(blockName, elemName, modName){
     return blockName + elemName + modName;
 }
 
-function getBlockName(trgPath, isBlock){
-    if (isBlock) return trgPath.match(/[-a-z0-9]+$/i)[0];
+function getBlockName(trgPath, isBlock, isFile){
+    if (isFile) trgPath = path.dirname(trgPath);
+    if (isBlock) return trgPath.match(/([-a-z0-9]+)\/?$/i)[1];
 
     var dirName = path.dirname(trgPath),
         baseName = path.basename(dirName);

@@ -2,6 +2,7 @@ node_modules/
 temp/
 .idea
 test/
+demo/
 atlassian-ide-plugin.xml
 
 .DS_Store

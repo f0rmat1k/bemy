@@ -123,9 +123,10 @@ function createFile(file, type, trg, modVal){
     trg = trg || trgPath;
     modVal = modVal || '';
 
-    if (BEM_INFO.isFile) trg = path.dirname(trg);
+    var info = bemInfo(trg);
+    if (info.isFile) trg = path.dirname(trg);
 
-    var p = path.join(trg, BEM_INFO.bemName + modVal + SUFFIXES[type]);
+    var p = path.join(trg, info.bemName + modVal + SUFFIXES[type]);
 
     if (!fs.existsSync(p)) fs.writeFileSync(p, file);
 

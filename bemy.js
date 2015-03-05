@@ -30,10 +30,6 @@ var BEM_INFO = bemInfo(trgPath),
 var task = options.t || 'auto';
 tasks[task]();
 
-function valdateBemName(name){
-    return !/[^-a-z0-9]/ig.test(name);
-}
-
 function startCreating(fileTypes){
     return fileTypes.forEach(function(fileType){
         createFileFromTemplate(fileType);
@@ -127,12 +123,11 @@ function createFile(file, type, trg, modVal){
     trg = trg || trgPath;
     modVal = modVal || '';
 
-    var info = bemInfo(trg),
-        p = path.join(trg, info.bemName + modVal + SUFFIXES[type]);
+    if (BEM_INFO.isFile) trg = path.dirname(trg);
 
-    if (!fs.existsSync(p)) {
-        fs.writeFileSync(p, file);
-    }
+    var p = path.join(trg, BEM_INFO.bemName + modVal + SUFFIXES[type]);
+
+    if (!fs.existsSync(p)) fs.writeFileSync(p, file);
 
     if (options.g) gitAddTrg(trg, p);
 }

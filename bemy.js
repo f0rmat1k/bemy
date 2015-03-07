@@ -8,10 +8,11 @@ var depsNormalize = require('deps-normalize');
 
 var options = minimist(process.argv.slice(2)),
     trgPath = options.f,
-    configPath = options.c || 'config.json',
+    configPath = options.c || path.join(__dirname,'config.json'),
     prompt = options.p ? options.p.toString().split(/\s/) : '',
     bemInfo = require('./bem-info.js'),
-    config = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
+    config = JSON.parse(fs.readFileSync(configPath, 'utf-8')),
+    ownConfig = options.c;
 
 var BEM_INFO = bemInfo(trgPath),
     SUFFIXES = config.suffixes,
@@ -39,8 +40,13 @@ function startCreating(fileTypes){
 function createFileFromTemplate(fileType, trg, modVal){
     trg = trg || trgPath;
 
-    var tmpPath = FILE_TEMPLATES[fileType],
-        file = insertName(getTemplate(tmpPath), trg, modVal);
+    var tmpPath = FILE_TEMPLATES[fileType];
+
+    if (!ownConfig) {
+        tmpPath = path.join(__dirname, tmpPath);
+    }
+
+    var file = insertName(getTemplate(tmpPath), trg, modVal);
 
     createFile(file, fileType, trg, modVal);
 }

@@ -106,11 +106,11 @@ function createNode(nodeObj){
         nodePath = path.join(blockDir, '_' + nodeObj.modName);
         if (!fs.existsSync(nodePath)) {
             fs.mkdirSync(nodePath);
-
-            fileTypes.forEach(function(type){
-                createFileFromTemplate(type, nodePath, modVal);
-            });
         }
+
+        fileTypes.forEach(function(type){
+            createFileFromTemplate(type, nodePath, modVal);
+        });
     }
 }
 

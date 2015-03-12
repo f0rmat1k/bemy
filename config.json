@@ -11,6 +11,7 @@
     "priv": ".priv.js",
     "p": ".priv.js"
   },
+
   "file-templates": {
     "js": "tmp/js-template.js",
     "j": "tmp/js-template.js",
@@ -23,7 +24,10 @@
     "priv": "tmp/priv-template.js",
     "p": "tmp/priv-template.js"
   },
+
   "deps_task": {
     "files": [ "css" ]
-  }
+  },
+
+  "editor-open-command": "/Applications/WebStorm.app/Contents/MacOS/webide"
 }

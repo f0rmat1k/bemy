@@ -32,7 +32,7 @@ var task = options.t || 'auto';
 tasks[task]();
 
 function startCreating(fileTypes){
-    return fileTypes.forEach(function(fileType){
+    fileTypes.forEach(function(fileType){
         createFileFromTemplate(fileType);
     });
 }
@@ -137,6 +137,12 @@ function createFile(file, type, trg, modVal){
     if (!fs.existsSync(p)) fs.writeFileSync(p, file);
 
     if (options.g) gitAddTrg(trg, p);
+
+    if (options.o) {
+        exec(config['editor-open-command'] + ' ' + p, function (error, stdout, stderr) {
+            if (stderr) console.error(stderr);
+        });
+    }
 }
 
 function getTemplate(tmpPath){

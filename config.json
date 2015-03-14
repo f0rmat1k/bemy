@@ -26,5 +26,5 @@
   "deps_task": {
     "files": [ "css" ]
   },
-  "editor-open-command": "/Applications/WebStorm.app/Contents/MacOS/webide"
+  "editor-open-command": "wstorm {{file-path}}:{{line-number}}"
 }

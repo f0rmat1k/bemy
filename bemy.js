@@ -10,7 +10,7 @@ var depsNormalize = require('deps-normalize');
 
 var options = minimist(process.argv.slice(2)),
     trgPath = options.f,
-    configPath = options.c || path.join(__dirname,'config.json'),
+    configPath = options.c || path.join(__dirname, 'config.json'),
     prompt = options.p ? options.p.toString().split(/\s/) : '',
     bemInfo = require('./bem-info.js'),
     config = JSON.parse(fs.readFileSync(configPath, 'utf-8')),
@@ -49,8 +49,10 @@ function createFileFromTemplate(fileType, trg, modVal){
     }
 
     var file = insertName(getTemplate(tmpPath), trg, modVal);
+    var cursorPos = getCursorPosition(file);
+    file = file.replace('{{cursor}}', '');
 
-    createFile(file, fileType, trg, modVal);
+    createFile(file, fileType, trg, modVal, cursorPos);
 }
 
 function insertName(file, trg, modVal){
@@ -127,7 +129,7 @@ function getNormalaizedDeps(data) {
     return mustDeps.concat(shouldDeps);
 }
 
-function createFile(file, type, trg, modVal){
+function createFile(file, type, trg, modVal, cursorPos){
     trg = trg || trgPath;
     modVal = modVal || '';
 
@@ -141,7 +143,12 @@ function createFile(file, type, trg, modVal){
     if (options.g) gitAddTrg(trg, p);
 
     if (options.o) {
-        exec(config['editor-open-command'] + ' ' + p, function (error, stdout, stderr) {
+        var editorCmd = config['editor-open-command']
+            .replace('{{file-path}}', p)
+            .replace('{{line-number}}', cursorPos);
+
+        exec(editorCmd, function (error, stdout, stderr) {
+            if (error) console.error(error);
             if (stderr) console.error(stderr);
         });
     }
@@ -155,6 +162,17 @@ function gitAddTrg(dir, file){
     exec('cd ' + dir + ' && git add ' + file, function (error, stdout, stderr) {
         if (stderr) console.error(stderr);
     });
+}
+
+function getCursorPosition(file){
+    var cursorPos = 1;
+    file.split('\n').forEach(function(line, i){
+        if (/{{cursor}}/.test(line)) {
+            cursorPos = i + 1;
+        }
+    });
+
+    return cursorPos;
 }
 
 function parseString(dep) {

@@ -7,7 +7,7 @@ BEM.DOM.decl('{{blockName}}{{elemName}}{{modName}}{{modVal}}', {
     },
 
     collectData: function () {
-
+        {{cursor}}
     },
 
     bindEvents: function () {

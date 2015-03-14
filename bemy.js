@@ -44,6 +44,11 @@ function createFileFromTemplate(fileType, trg, modVal){
 
     var tmpPath = FILE_TEMPLATES[fileType];
 
+    if (!tmpPath) {
+        console.error('Unknown file type');
+        return;
+    }
+
     if (!ownConfig) {
         tmpPath = path.join(__dirname, tmpPath);
     }
@@ -148,7 +153,6 @@ function createFile(file, type, trg, modVal, cursorPos){
             .replace('{{line-number}}', cursorPos);
 
         exec(editorCmd, function (error, stdout, stderr) {
-            if (error) console.error(error);
             if (stderr) console.error(stderr);
         });
     }

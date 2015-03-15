@@ -10,7 +10,7 @@ var depsNormalize = require('deps-normalize');
 
 var options = minimist(process.argv.slice(2)),
     trgPath = options.f,
-    configPath = options.c || path.join(__dirname, 'config.json'),
+    configPath = options.c ? path.resolve(options.c) : path.join(__dirname, 'config.json'),
     prompt = options.p ? options.p.toString().split(/\s/) : '',
     bemInfo = require('./bem-info.js'),
     config = JSON.parse(fs.readFileSync(configPath, 'utf-8')),
@@ -52,6 +52,8 @@ function createFileFromTemplate(fileType, trg, modVal){
     if (!ownConfig) {
         tmpPath = path.join(__dirname, tmpPath);
     }
+
+    tmpPath = path.resolve(tmpPath);
 
     var file = insertName(getTemplate(tmpPath), trg, modVal);
     var cursorPos = getCursorPosition(file);
@@ -143,18 +145,20 @@ function createFile(file, type, trg, modVal, cursorPos){
 
     var p = path.join(trg, info.bemName + modVal + SUFFIXES[type]);
 
-    if (!fs.existsSync(p)) fs.writeFileSync(p, file);
+    if (!fs.existsSync(p)) {
+        fs.writeFileSync(p, file);
 
-    if (options.g) gitAddTrg(trg, p);
+        if (options.g) gitAddTrg(trg, p);
 
-    if (options.o) {
-        var editorCmd = config['editor-open-command']
-            .replace('{{file-path}}', p)
-            .replace('{{line-number}}', cursorPos);
+        if (options.o) {
+            var editorCmd = config['editor-open-command']
+                .replace('{{file-path}}', p)
+                .replace('{{line-number}}', cursorPos);
 
-        exec(editorCmd, function (error, stdout, stderr) {
-            if (stderr) console.error(stderr);
-        });
+            exec(editorCmd, function (error, stdout, stderr) {
+                if (stderr) console.error(stderr);
+            });
+        }
     }
 }
 
@@ -184,8 +188,8 @@ function parseString(dep) {
 
     var block = (dep.match(/[-a-z0-9]+/i) || [])[0],
         elem = (dep.match(/^[-a-z0-9]+__([-a-z0-9]+)/i) || [])[1],
-        modName = (dep.match(/^[-a-z0-9]+__[-a-z0-9]+_([-a-z0-9]+)/i) || [])[1],
-        modVal = (dep.match(/^[-a-z0-9]+__[-a-z0-9]+_[-a-z0-9]+_([-a-z0-9]+)$/i) || [])[1];
+        modName = (dep.match(/[^_]_([a-z0-9]+)/i) || [])[1],
+        modVal = (dep.match(/[^_]_[a-z0-9]+_([a-z0-9]+)/i) || [])[1];
 
     block && (obj['block'] = block);
     elem && (obj['elem'] = elem);

@@ -1,0 +1,30 @@
+{
+  "suffixes": {
+    "css": ".css",
+    "c": ".css",
+    "js": ".js",
+    "j": ".js",
+    "deps": ".deps.js",
+    "d": ".deps.js",
+    "bh": ".bh.js",
+    "b": ".bh.js",
+    "priv": ".priv.js",
+    "p": ".priv.js"
+  },
+  "file-templates": {
+    "js": "tmp/js-template.js",
+    "j": "tmp/js-template.js",
+    "css": "tmp/css-template.css",
+    "c": "tmp/css-template.css",
+    "bh": "tmp/bh-template.js",
+    "b": "tmp/bh-template.js",
+    "deps": "test/deps-template.js",
+    "d": "test/deps-template.js",
+    "priv": "tmp/priv-template.js",
+    "p": "tmp/priv-template.js"
+  },
+  "deps_task": {
+    "files": [ "css" ]
+  },
+  "editor-open-command": "wstorm {{file-path}}:{{line-number}}"
+}

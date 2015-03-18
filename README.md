@@ -1,40 +1,45 @@
 #Bemy
 [![Build Status][travis-image]][travis-url]  
-Хэлпер для автогенерации файловой структуры BEM с помощью командной строки.
-Позволяет генерировать структуру папок и файлов элементов по deps-файлу, одной командой (можно сделать хоткей) создавать различные типы файлов любой бем-сущности.
-Для всех типов файлов используются шаблоны с подстановкой бем-имен, таким образом вы можете настроить их, как вам удобно.
-Можно добавлять свои типы файлов.
+Bemy is a CLI helper for auto-generation BEM structure. Specialy usefull with webstorm (external tools).  
+It allows to generate folders and files structure using deps.js file with one command (or hotkey).  
+For all file types taking templates with including BEM names into placegolders. You can tune it. You can add your own file types.
 
-##Установка
+##Install
 
 ```bash
-npm i bemy
+npm -g i bemy
 ```
-##Использование
-###Опции командной строки
-`-t [task name]` — имя вызываемой задачи. При отсутствии опции вызывается автозадача;  
-`-f [path]` — обязательная опция. Путь к БЕМ-сущности, относительно которой вызывается задача;  
-`-p [file list]`  — перечень типов создаваемых файлов, используемых в задаче создания. Доступны следующие типы файлов: `-p "css js deps priv bh"`. При этом можно использовать сокращенную записать `p c j b d`. Добавить свои типы и сокращения к ним можно с помощью config.json.  
-`-g` — ключ, при наличии которого созданные файлы добавляются в git (иными словами просиходит git add над каждым создаваемым файлом);  
-`-c [config path]` — путь к файлу конфигурации. По умолчанию `config.json`;  
-`-o` — ключ, при наличии которого файл будет открыт сразу после создания в редакторе. Команда вызова редактора конфигурируется в config.json.
+##Using
+###Command line options
+`-t [task name]` — name of the called task. default: 'auto';  
+`-f [path]` — required. Path to BEM node (folder or file);  
+`-p [file list]` — file types list for task of `creation`. Available following file types: `-p "css js deps priv bh"`. Also you can use short notation `p c j b d`. You can add you own file types and shortcuts at config.json.  
+`-g` — adding into git for created files (invokes git add for each file);  
+`-c [config path]` — path of your own config json file. By default using config.json from bemy directory;  
+`-o` — to open the file after creation. Creation command configured in config.json in section `editor-open-command`. Default value is `wstorm {{file-path}}:{{line-number}}`. See more details at below in section `Configuring`.
 
-###Задача создания  
-Принимает набор аргументов в виде типов файлов (или их сокращений) и создает файлы, используя шаблоны в поставке тулзы.
+###The task of creation  
+Takes arguments with file types and creates files using templates.
 
-####Интерфейс командной строки:  
-`node bemy.js -t create -f [file path] -p "[file types]"`, где `file path` — это путь к БЕМ-сущности, `file types` — строка, содержащая типы файлов для создания в виде сокращений с разделением через пробел.  
-Пример: `node bemy.js -t create -f ~/testBlock/__elem -p "css js"` приведет к тому, что в `~/testBlock/__elem` появятся 2 файла: `testBlock__elem.js` и `testBlock__elem.css`.
+####CLI:  
+`node bemy.js -t create -f [file path] -p "[file types]"`, where `file path` — is a path to BEM node (folder or file), `file types` — list of needed files separated by space.  
+Example:  
+Command: `node bemy.js -t create -f ~/testBlock/__elem -p "css js"`  
+Result: At folder `~/testBlock/__elem` appear two files: `testBlock__elem.js` and `testBlock__elem.css`.  
 
-####Реплейсы шаблонов  
-При создании файлов БЕМ-сущностей в шаблонах вхождения `{{blockName}}`, `{{elemName}}`, `{{modName}}`, `{{modVal}}` будут заменены на соответствующие сущности имена. Дефолтный шаблон css-файла содержит
+When you use bemy on files supposed to use bemy on the folder containg this file. So this two variant are equal: `-f ~/testBlock/__elem` and `-f ~/testBlock/__elem/testBlock__elem.bh.js`.  
+
+####Placeholders in templates
+There are following placeholders: `{{blockName}}`, `{{elemName}}`, `{{modName}}`, `{{modVal}}`.  
+When files creating entries gonna replace with relative part of BEM node name.  
+For example, default css template contain:
 ```
 .{{blockName}}{{elemName}}{{modName}}{{modVal}}
 {
    
 }
 ```
-, таким образом результирующий css-файл из примера выше будет содержать:
+, so resulted file will be contain:
 ```css
 .testBlock__elem {
    

@@ -39,7 +39,7 @@ For example, default css template contain:
    
 }
 ```
-, so resulted file will be contain:
+, so resulted file will contain:
 ```css
 .testBlock__elem {
    

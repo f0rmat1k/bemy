@@ -3,6 +3,6 @@
 
     ],
     shouldDeps: [
-        { elems: [ '' ] }
+        { elems: [ '{{cursor}}' ] }
     ]
 })

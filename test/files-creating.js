@@ -6,61 +6,43 @@ var sh = require('execSync');
 var fs = require('fs-extra');
 var path = require('path');
 
-var blockName = 'test-block',
+var blockName = 'testBlock',
     blockDir = path.join(__dirname, blockName),
     depsTmpPath = path.join('test', 'deps-template.js');
 
-fs.removeSync(blockDir);
-fs.removeSync(depsTmpPath);
-
-fs.mkdirSync(blockDir);
-
 //tests
-var deps = {
-
-    //elems
-    '__car/test-block__car.css': 'test-block__car',
-    '__tar/test-block__tar.css': { elem: 'tar' },
-    '__foo/test-block__foo.css': { elems: ['foo', 'bar'] },
-    '__bar/test-block__bar.css': { elems: ['foo', 'bar'] },
-    '__one/test-block__one.css': { elem: 'one', mods: { three: 'four' } },
-
-    //elem mods
-    '__sop/test-block__sop.css': 'test-block__sop_gop',
-    '__sop/_gop/test-block__sop_gop.css': 'test-block__sop_gop',
-
-    //elem mod values
-    '__sop/_gop/test-block__sop_gop_kop.css': 'test-block__sop_gop_kop',
-    '__one/_three/test-block__one_three_four.css': { elem: 'one', mods: { three: 'four' } },
-
-    //block mods
-    '_dop/test-block_dop.css': 'test-block_dop',
-    '_firstMod/test-block_firstMod.css': { mods: ['firstMod', 'secondMod'] },
-    '_secondMod/test-block_secondMod.css': { mods: ['firstMod', 'secondMod'] },
-
-    //block mod values
-    '_hop/test-block_hop_op.css': 'test-block_hop_op',
-    '_jazz/test-block_jazz_fazz.css': { mods: { jazz: 'fazz' } },
-    '_lolz/test-block_lolz_foo.css': { mods: { lolz: [ 'foo', 'bar' ] } },
-    '_lolz/test-block_lolz_bar.css': { mods: { lolz: [ 'foo', 'bar' ] } }
-};
-
-createDepsTpl(deps);
-
 describe('Files creating', function(){
     it ('Create task: should be correct blocks files creating', function(done){
-        testCreatingTask();
-        testDepsCreationFiles();
+        [
+            'config.json',
+            'config_custon-separators.json'
 
-        fs.removeSync(blockDir);
-        fs.removeSync(depsTmpPath);
+        ].forEach(function(configName){
+                var configPath = path.resolve('test', configName),
+                    config = JSON.parse(fs.readFileSync(configPath, 'utf-8')),
+                    separators = config.bem.separators;
+
+                fs.removeSync(blockDir);
+                fs.removeSync(depsTmpPath);
+
+                fs.mkdirSync(blockDir);
+
+                var deps = getDeps(separators);
+                createDepsTpl(deps);
+
+                testCreatingTask(configPath);
+                testDepsCreationFiles(deps, configPath);
+
+                fs.removeSync(blockDir);
+                fs.removeSync(depsTmpPath);
+            });
 
         done();
     });
 });
 
-function testCreatingTask(){
-    createBlockFiles();
+function testCreatingTask(configPath){
+    createBlockFiles(configPath);
 
     fs.existsSync(path.join('test', blockName, blockName + '.css')).should.be.eql(true);
     fs.existsSync(path.join('test', blockName, blockName + '.js')).should.be.eql(true);
@@ -69,18 +51,18 @@ function testCreatingTask(){
     fs.existsSync(path.join('test', blockName, blockName + '.deps.js')).should.be.eql(true);
 }
 
-function createBlockFiles(){
-    sh.run('node bemy.js -t create -p "c d j b p" -c ./test/config.json -f ' + blockDir);
+function createBlockFiles(configPath){
+    sh.run('node bemy.js -t create -p "c d j b p" -c ' + configPath + ' -f ' + blockDir);
     fs.existsSync(path.resolve(blockDir, blockName + '.css')).should.be.eql(true);
 }
 
-function runDepsAutoTask(){
+function runDepsAutoTask(configPath){
     var blockDepsFilePath = path.resolve(blockDir, blockName + '.deps.js');
-    sh.run('node bemy.js -c ./test/config.json -f ' + blockDepsFilePath);
+    sh.run('node bemy.js -c ' + configPath + ' -f ' + blockDepsFilePath);
 }
 
-function testDepsCreationFiles(){
-    runDepsAutoTask();
+function testDepsCreationFiles(deps, configPath){
+    runDepsAutoTask(configPath);
 
     Object.keys(deps).forEach(function(key){
         var filePath = path.resolve('test/', blockName, key);
@@ -101,4 +83,60 @@ function createDepsTpl(deps){
     var depsFile = '({ shouldDeps: ' + obj  + '})';
 
     fs.writeFileSync(depsPath, depsFile);
+}
+
+function getDeps(separators){
+
+    // {{e-s}} = elem separator
+    // {{m-s}} = mod separator
+    // {{mv-s}} = mod value separator
+
+    var depsTpl = {
+        //elems
+        '{{e-s}}car/testBlock{{e-s}}car.css': 'testBlock{{e-s}}car',
+        '{{e-s}}tar/testBlock{{e-s}}tar.css': { elem: 'tar' },
+        '{{e-s}}foo/testBlock{{e-s}}foo.css': { elems: ['foo', 'bar'] },
+        '{{e-s}}bar/testBlock{{e-s}}bar.css': { elems: ['foo', 'bar'] },
+        '{{e-s}}one/testBlock{{e-s}}one.css': { elem: 'one', mods: { three: 'four' } },
+
+        //elem mods
+        '{{e-s}}sop/testBlock{{e-s}}sop.css': 'testBlock{{e-s}}sop{{m-s}}gop',
+        '{{e-s}}sop/{{m-s}}gop/testBlock{{e-s}}sop{{m-s}}gop.css': 'testBlock{{e-s}}sop{{m-s}}gop',
+
+        //elem mod values
+        '{{e-s}}sop/{{m-s}}gop/testBlock{{e-s}}sop{{m-s}}gop{{mv-s}}kop.css': 'testBlock{{e-s}}sop{{m-s}}gop{{mv-s}}kop',
+        '{{e-s}}one/{{m-s}}three/testBlock{{e-s}}one{{m-s}}three{{mv-s}}four.css': { elem: 'one', mods: { three: 'four' } },
+
+        //block mods
+        '{{m-s}}dop/testBlock{{m-s}}dop.css': 'testBlock{{m-s}}dop',
+        '{{m-s}}firstMod/testBlock{{m-s}}firstMod.css': { mods: ['firstMod', 'secondMod'] },
+        '{{m-s}}secondMod/testBlock{{m-s}}secondMod.css': { mods: ['firstMod', 'secondMod'] },
+
+        //block mod values
+        '{{m-s}}hop/testBlock{{m-s}}hop{{mv-s}}op.css': 'testBlock{{m-s}}hop{{mv-s}}op',
+        '{{m-s}}jazz/testBlock{{m-s}}jazz{{mv-s}}fazz.css': { mods: { jazz: 'fazz' } },
+        '{{m-s}}lolz/testBlock{{m-s}}lolz{{mv-s}}foo.css': { mods: { lolz: [ 'foo', 'bar' ] } },
+        '{{m-s}}lolz/testBlock{{m-s}}lolz{{mv-s}}bar.css': { mods: { lolz: [ 'foo', 'bar' ] } }
+    };
+
+    var resultDeps = {};
+    Object.keys(depsTpl).forEach(function(key){
+        var val = depsTpl[key];
+
+        key = key
+            .replace(/\{\{e\-s\}\}/g, separators.elem)
+            .replace(/\{\{m\-s\}\}/g, separators.mod)
+            .replace(/\{\{mv\-s\}\}/g, separators.modVal);
+
+        if (typeof val === 'string') {
+            val = val
+                .replace(/\{\{e\-s\}\}/g, separators.elem)
+                .replace(/\{\{m\-s\}\}/g, separators.mod)
+                .replace(/\{\{mv\-s\}\}/g, separators.modVal);
+        }
+
+        resultDeps[key] = val;
+    });
+
+    return resultDeps;
 }

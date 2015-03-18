@@ -26,5 +26,13 @@
   "deps_task": {
     "files": [ "css" ]
   },
-  "editor-open-command": "wstorm {{file-path}}:{{line-number}}"
+  "editor-open-command": "wstorm {{file-path}}:{{line-number}}",
+  "bem": {
+    "separators": {
+      "elem": "__",
+      "mod": "_",
+      "modVal": "_"
+    },
+    "allowed-name-symbols-regexp": "[-a-z0-9]"
+  }
 }

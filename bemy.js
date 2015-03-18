@@ -16,7 +16,11 @@ var options = minimist(process.argv.slice(2)),
     config = JSON.parse(fs.readFileSync(configPath, 'utf-8')),
     ownConfig = options.c;
 
-var BEM_INFO = bemInfo(trgPath),
+var bem = config.bem,
+    BEM_INFO = bemInfo({
+        trgPath: trgPath,
+        bem: bem
+    }),
     SUFFIXES = config.suffixes,
     FILE_TEMPLATES = config['file-templates'],
     DEFAULT_ACTIONS = {
@@ -63,7 +67,10 @@ function createFileFromTemplate(fileType, trg, modVal){
 }
 
 function insertName(file, trg, modVal){
-    var info = bemInfo(trg);
+    var info = bemInfo({
+        trgPath: trg,
+        bem: bem
+    });
 
     return file
         .replace(/{{blockName}}/g, info.blockName)
@@ -86,13 +93,16 @@ function createNode(nodeObj){
     var blockDir = path.dirname(trgPath),
         nodePath,
         fileTypes = config.deps_task ? config.deps_task.files : [],
-
-    modVal = nodeObj.modVal ? '_' + nodeObj.modVal : '';
+        modSeparator = bem.separators.mod || '_',
+        modValSeparator = bem.separators.modVal || '_',
+        modVal = nodeObj.modVal ? modValSeparator + nodeObj.modVal : '';
 
     if (nodeObj.elem) {
         if (BEM_INFO.isElem) return;
 
-        nodePath = path.join(blockDir, '__' + nodeObj.elem);
+        var elemSeparator = bem.separators.elem || '__';
+
+        nodePath = path.join(blockDir, elemSeparator + nodeObj.elem);
 
         if (!fs.existsSync(nodePath)) {
             fs.mkdirSync(nodePath);
@@ -103,7 +113,7 @@ function createNode(nodeObj){
         }
 
         if (nodeObj.modName) {
-            nodePath = path.join(nodePath, '_' + nodeObj.modName);
+            nodePath = path.join(nodePath, modSeparator + nodeObj.modName);
 
             if (!fs.existsSync(nodePath)) {
                 fs.mkdirSync(nodePath);
@@ -114,7 +124,7 @@ function createNode(nodeObj){
             });
         }
     } else {
-        nodePath = path.join(blockDir, '_' + nodeObj.modName);
+        nodePath = path.join(blockDir, modSeparator + nodeObj.modName);
         if (!fs.existsSync(nodePath)) {
             fs.mkdirSync(nodePath);
         }
@@ -138,9 +148,14 @@ function getNormalaizedDeps(data) {
 
 function createFile(file, type, trg, modVal, cursorPos){
     trg = trg || trgPath;
+
     modVal = modVal || '';
 
-    var info = bemInfo(trg);
+    var info = bemInfo({
+        trgPath: trg,
+        bem: bem
+    });
+
     if (info.isFile) trg = path.dirname(trg);
 
     var p = path.join(trg, info.bemName + modVal + SUFFIXES[type]);
@@ -184,12 +199,17 @@ function getCursorPosition(file){
 }
 
 function parseString(dep) {
-    var obj = {};
+    var obj = {},
+        allowedSymbols = bem['allowed-name-symbols-regexp'],
+        blockRegExp = new RegExp(allowedSymbols + '+', 'i'),
+        elemSeparator = bem && bem.separators.elem || '__',
+        modSeparator = bem && bem.separators.mod || '_',
+        modValSeparator = bem && bem.separators.modVal || '_';
 
-    var block = (dep.match(/[-a-z0-9]+/i) || [])[0],
-        elem = (dep.match(/^[-a-z0-9]+__([-a-z0-9]+)/i) || [])[1],
-        modName = (dep.match(/[^_]_([a-z0-9]+)/i) || [])[1],
-        modVal = (dep.match(/[^_]_[a-z0-9]+_([a-z0-9]+)/i) || [])[1];
+    var block = (dep.match(blockRegExp) || [])[0],
+        elem = (dep.match(new RegExp('^' + allowedSymbols + '+' + elemSeparator + '(' + allowedSymbols + '+)', 'i')) || [])[1],
+        modName = (dep.match(new RegExp('[^' + modSeparator + ']' + modSeparator + '(' + allowedSymbols + '+)', 'i')) || [])[1],
+        modVal = (dep.match(new RegExp('[^' + modSeparator + ']' + modSeparator + allowedSymbols + '+' + modValSeparator + '(' + allowedSymbols + '+)', 'i')) || [])[1];
 
     block && (obj['block'] = block);
     elem && (obj['elem'] = elem);

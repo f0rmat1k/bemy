@@ -8,7 +8,10 @@ var bemInfo = require('../bem-info.js');
 
 describe('bemInfo', function () {
     it('should be correct processing with "/" in the end of block path', function () {
-        bemInfo('somePath/someBlock/', false).should.be.eql({
+        bemInfo({
+            trgPath: 'somePath/someBlock/',
+            isFile: false
+        }).should.be.eql({
             isFile: false,
             isDir: true,
             type: 'blockDir',
@@ -24,7 +27,10 @@ describe('bemInfo', function () {
     });
 
     it('should be correct processing without "/" in the end of block path', function () {
-        bemInfo('somePath/someBlock/', false).should.be.eql({
+        bemInfo({
+            trgPath: 'somePath/someBlock/',
+            isFile: false
+        }).should.be.eql({
             isFile: false,
             isDir: true,
             type: 'blockDir',
@@ -40,7 +46,10 @@ describe('bemInfo', function () {
     });
 
     it('should be correct processing with "/" in the end of elem path', function () {
-        bemInfo('somePath/someBlock/__someElem/', false).should.be.eql({
+        bemInfo({
+            trgPath: 'somePath/someBlock/__someElem/',
+            isFile: false
+        }).should.be.eql({
             isFile: false,
             isDir: true,
             type: 'elemDir',
@@ -56,7 +65,10 @@ describe('bemInfo', function () {
     });
 
     it('should be correct processing without "/" in the end of elem path', function () {
-        bemInfo('somePath/someBlock/__someElem', false).should.be.eql({
+        bemInfo({
+            trgPath: 'somePath/someBlock/__someElem',
+            isFile: false
+        }).should.be.eql({
             isFile: false,
             isDir: true,
             type: 'elemDir',
@@ -72,7 +84,10 @@ describe('bemInfo', function () {
     });
 
     it('should be correct processing with "/" in the end of mod path', function () {
-        bemInfo('somePath/someBlock/__someElem/_someMod/', false).should.be.eql({
+        bemInfo({
+            trgPath: 'somePath/someBlock/__someElem/_someMod/',
+            isFile: false
+        }).should.be.eql({
             isFile: false,
             isDir: true,
             type: 'modDir',
@@ -88,7 +103,10 @@ describe('bemInfo', function () {
     });
 
     it('should be correct processing without "/" in the end of mod path', function () {
-        bemInfo('somePath/someBlock/__someElem/_someMod', false).should.be.eql({
+        bemInfo({
+            trgPath: 'somePath/someBlock/__someElem/_someMod',
+            isFile: false
+        }).should.be.eql({
             isFile: false,
             isDir: true,
             type: 'modDir',
@@ -104,7 +122,10 @@ describe('bemInfo', function () {
     });
 
     it('correct detection for block deps file', function () {
-        bemInfo('somePath/someBlock/someBlock.deps.js', true).should.be.eql({
+        bemInfo({
+            trgPath: 'somePath/someBlock/someBlock.deps.js',
+            isFile: true
+        }).should.be.eql({
             isFile: true,
             isDir: false,
             type: 'deps',
@@ -120,7 +141,10 @@ describe('bemInfo', function () {
     });
 
     it('correct detection for elem deps file', function () {
-        bemInfo('somePath/someBlock/__someElem/someBlock__someElem.deps.js', true).should.be.eql({
+        bemInfo({
+            trgPath: 'somePath/someBlock/__someElem/someBlock__someElem.deps.js',
+            isFile: true
+        }).should.be.eql({
             isFile: true,
             isDir: false,
             type: 'deps',

@@ -1,18 +1,16 @@
 #Bemy
 [![Build Status][travis-image]][travis-url]  
-Bemy is a CLI helper for auto-generation BEM structure. Specialy usefull with webstorm (external tools).  
-It allows to generate folder and file structure using deps.js file with one command (or hotkey).  
-For all file types taking templates with including BEM names into placegolders. You can tune it. You can add your own file types.
+Bemy is a CLI helper for auto-generation BEM structure. Especialy usefull with webstorm (external tools). It allows to generate folder and file structure using deps.js file with one command (or hotkey). For all file types taking templates with including BEM names into placeholders. You can tune it and you can add your own file types.  
 
 ##Install
 ```bash
 npm -g i bemy
 ```
-##Using
+##Usage
 ```bash
 bemy [options]
 ```
-###Command line options
+###CLI options
 `-t [task name]` — name of the called task. default: 'auto';  
 `-f [path]` — required. Path to BEM node (folder or file);  
 `-p [file list]` — file types list for task of `creation`. Available following file types: `-p "css js deps priv bh"`. Also you can use short notation `p c j b d`. You can add you own file types and shortcuts at config.json.  

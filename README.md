@@ -27,10 +27,10 @@ Example:
 Command: `bemy -t create -f ~/testBlock/__elem -p "css js"`  
 Result: In the folder `~/testBlock/__elem` was added two files: `testBlock__elem.js` and `testBlock__elem.css`.  
 
-When you use bemy on files supposed to use bemy on the folder containg this file. So this two variant are equal: `-f ~/testBlock/__elem` and `-f ~/testBlock/__elem/testBlock__elem.bh.js`.  
+When you use bemy on files supposed to use bemy on the folder containg this file. So this two variants are equal: `-f ~/testBlock/__elem` and `-f ~/testBlock/__elem/testBlock__elem.bh.js`.  
 
 ####Placeholders in templates
-There are following placeholders: `{{blockName}}`, `{{elemName}}`, `{{modName}}`, `{{modVal}}` and {{cursor}}. When files creating entries gonna replace with relevant part of BEM node name.  And {{cursor}} will be deleted and used to set cursor line number (see more at Configuring section).
+There are following placeholders: `{{blockName}}`, `{{elemName}}`, `{{modName}}`, `{{modVal}}` and `{{cursor}}`. When files creating this entries will be replaced with relevant part of BEM node name.  And `{{cursor}}` will be deleted and used for setting cursor line number (see more at Configuring section).
 For example, default css template contain:
 ```
 .{{blockName}}{{elemName}}{{modName}}{{modVal}}
@@ -65,7 +65,7 @@ Don't forget to configure hotkey for task running (e.g. `ctrl + a`) at `keymap` 
 `config.json` is in bemy root folder.  
 ####Sections
 `suffixes` — a list of shotrcuts and relevant file extensions. Shotrcuts using in `-p` key.  
-`file-templates` — a list of shortcuts with relevant path to template.  
+`file-templates` — a list of shortcuts with relevant pathes to templates.  
 `deps_task` – options for autotask when it called on deps file. `files` – list of files to be created in addition to folders.  
 `editor-open-command` — command to be called after creating the file. There are two placeholders: 1) {{file-path}} to be replaced with relevant file path. 2) {{line-number}} will be taken from {{cursor}} position of relevant template.  Default command is `wstorm {{file-path}}:{{line-number}}`, so if you use webstorm you need to create CLI launcher at webstorm with same name (Tools / Create Command-line Lanucher). If u use old wersion of webstorm you can try to use `/Applications/WebStorm.app/Contents/MacOS/webide` for `editor-open-command`.
 `bem` — your BEM options. If you using own `separators` you must set right `allowed-name-symbols-regexp`.

@@ -67,7 +67,7 @@ Don't forget to configure hotkey for task running (e.g. `ctrl + a`) at `keymap` 
 `suffixes` — a list of shotrcuts and relevant file extensions. Shotrcuts using in `-p` key.  
 `file-templates` — a list of shortcuts with relevant pathes to templates.  
 `deps_task` – options for autotask when it called on deps file. `files` – list of files to be created in addition to folders.  
-`editor-open-command` — command to be called after creating the file. There are two placeholders: 1) {{file-path}} to be replaced with relevant file path. 2) {{line-number}} will be taken from {{cursor}} position of relevant template.  Default command is `wstorm {{file-path}}:{{line-number}}`, so if you use webstorm you need to create CLI launcher at webstorm with same name (Tools / Create Command-line Lanucher). If u use old wersion of webstorm you can try to use `/Applications/WebStorm.app/Contents/MacOS/webide` for `editor-open-command`.
+`editor-open-command` — command to be called after creating the file. There are two placeholders: 1) {{file-path}} to be replaced with relevant file path. 2) {{line-number}} will be taken from {{cursor}} position of relevant template.  Default command is `wstorm {{file-path}}:{{line-number}}`, so if you use webstorm you need to create CLI launcher at webstorm with same name (Tools / Create Command-line Lanucher). If u use old wersion of webstorm you can try to use `/Applications/WebStorm.app/Contents/MacOS/webide` for `editor-open-command`.  
 `bem` — your BEM options. If you using own `separators` you must set right `allowed-name-symbols-regexp`.
 
 [travis-url]: http://travis-ci.org/f0rmat1k/bemy

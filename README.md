@@ -1,15 +1,17 @@
 #Bemy
 [![Build Status][travis-image]][travis-url]  
 Bemy is a CLI helper for auto-generation BEM structure. Specialy usefull with webstorm (external tools).  
-It allows to generate folders and files structure using deps.js file with one command (or hotkey).  
+It allows to generate folder and file structure using deps.js file with one command (or hotkey).  
 For all file types taking templates with including BEM names into placegolders. You can tune it. You can add your own file types.
 
 ##Install
-
 ```bash
 npm -g i bemy
 ```
 ##Using
+```bash
+bemy [options]
+```
 ###Command line options
 `-t [task name]` — name of the called task. default: 'auto';  
 `-f [path]` — required. Path to BEM node (folder or file);  
@@ -21,53 +23,54 @@ npm -g i bemy
 ###The task of creation  
 Takes arguments with file types and creates files using templates.
 
-####CLI:  
-`node bemy.js -t create -f [file path] -p "[file types]"`, where `file path` — is a path to BEM node (folder or file), `file types` — list of needed files separated by space.  
+####CLI of task of creation:  
+`bemy -t create -f [file path] -p "[file types]"`, where `file path` — is a path to BEM node (folder or file), `file types` — list of needed files separated by space.  
 Example:  
-Command: `node bemy.js -t create -f ~/testBlock/__elem -p "css js"`  
-Result: At folder `~/testBlock/__elem` appear two files: `testBlock__elem.js` and `testBlock__elem.css`.  
+Command: `bemy -t create -f ~/testBlock/__elem -p "css js"`  
+Result: In the folder `~/testBlock/__elem` was added two files: `testBlock__elem.js` and `testBlock__elem.css`.  
 
 When you use bemy on files supposed to use bemy on the folder containg this file. So this two variant are equal: `-f ~/testBlock/__elem` and `-f ~/testBlock/__elem/testBlock__elem.bh.js`.  
 
 ####Placeholders in templates
-There are following placeholders: `{{blockName}}`, `{{elemName}}`, `{{modName}}`, `{{modVal}}`.  
-When files creating entries gonna replace with relative part of BEM node name.  
+There are following placeholders: `{{blockName}}`, `{{elemName}}`, `{{modName}}`, `{{modVal}}` and {{cursor}}. When files creating entries gonna replace with relevant part of BEM node name.  And {{cursor}} will be deleted and used to set cursor line number (see more at Configuring section).
 For example, default css template contain:
 ```
 .{{blockName}}{{elemName}}{{modName}}{{modVal}}
 {
-   
+   {{cursor}}
 }
 ```
 , so resulted file will contain:
 ```css
 .testBlock__elem {
-   
+/* curor will be here, if you use right configured -o key */
 }
 ```
 
-Пример настройки задачи создания для `webstorm` через `external tools`:  
-![](https://cloud.githubusercontent.com/assets/769992/6200667/69699e40-b4a4-11e4-88bb-904ee8f1d99a.png)  
-Для большего удобства можно настроить hotkey для запуска задачи. Рекомендуемое сочетание `ctrl + c` ('c' в контексте create). Настраивается в keymap.
+An example of using bemy with `external tools` of webstorm:  
+![](https://cloud.githubusercontent.com/assets/769992/6725632/0232f4ee-ce2e-11e4-942e-7845381663ed.png)  
+Don't forget to configure hotkey for task running (e.g. `ctrl + c`) at `keymap` section.
 
-###Автозадача  
-Вызывает действите по умолчанию относительно BEM-сущности. В данный момент работают следующие вещи следующим образом:  
-1. Если целью является каталог блока, элемента или модификатора, то запускается задача создания с единственным типов файла — css.
-2. Если целью является deps-файл, то создается набор каталогов всех элементов, модификаторов, а также модификаторов элементов. По умолчанию также создаются css-файлы сущностей.
+###Autotask  
+Call default action depend on BEM node. Currently work following variants:
+1. If target is deps-file, creates described elems\mods\elemMods folder structure. And depend on options of config.json also creates elems\mods\elemMods files. By default it's css files. Se `Configuring` section for more details.
+2. Otherwise call create task with default options (equal `-t create -f [file path] -p "css"``). Default file types for autotask configurable at config.json.
 
-####Интерфейс командной строки:  
-`node bemy.js -f [file path]`, где `file path` — это путь к бем-сущности  
+####CLI of autotask:  
+`bemy -f [file path]`, where `file path` — it's a path to BEM node.
 
-Пример настройки автозадачи для `webstorm` через `external tools`:  
-![](https://cloud.githubusercontent.com/assets/769992/6200662/3af8147e-b4a4-11e4-8589-63a607849c32.png)  
-Для большего удобства можно настроить hotkey для запуска задачи. Рекомендуемое сочетание `ctrl + a` ('a' в контексте automatic). Настраивается в keymap.
+An example of using bemy with `external tools` of webstorm:  
+![](https://cloud.githubusercontent.com/assets/769992/6725778/23a5188a-ce30-11e4-828d-0d590fb26e08.png)  
+Don't forget to configure hotkey for task running (e.g. `ctrl + a`) at `keymap` section.
 
-###Конфигурирование
-Конфигурационный файл config.json располагается в корне тулзы. В нем хранятся сокращения, расширения создаваемых файлов и пути к шаблонам.  
-`suffixes` — перечень расширений файлов, соответствующих сокращениям. Сокращения — это список, полученный из опции `-p`.  
-`file-templates` — список путей к шаблонам, соответствующим сокращениям.  
-`deps_task` — конфигурирование автотаски по депсам. `files` — массив списка типов файлов, которые будут добавлены при создании структуры элементов и модификаторов.  
-`editor-open-command` — Команда вызова редактора. С ней конкатенироватся путь к файлу при вызове bemy с ключом `-o`, и команда будет выполнена после создания файла.
+###Confgiring
+`config.json` is in bemy root folder.  
+####Sections
+`suffixes` — a list of shotrcuts and relevant file extensions. Shotrcuts using in `-p` key.  
+`file-templates` — a list of shortcuts with relevant path to template.  
+`deps_task` – options for autotask when it called on deps file. `files` – list of files to be created in addition to folders.  
+`editor-open-command` — command to be called after creating the file. There are two placeholders: 1) {{file-path}} to be replaced with relevant file path. 2) {{line-number}} will be taken from {{cursor}} position of relevant template.  Default command is `wstorm {{file-path}}:{{line-number}}`, so if you use webstorm you need to create CLI launcher at webstorm with same name (Tools / Create Command-line Lanucher). If u use old wersion of webstorm you can try to use `/Applications/WebStorm.app/Contents/MacOS/webide` for `editor-open-command`.
+`bem` — your BEM options. If you using own `separators` you must set right `allowed-name-symbols-regexp`.
 
 [travis-url]: http://travis-ci.org/f0rmat1k/bemy
 [travis-image]: http://img.shields.io/travis/f0rmat1k/bemy.svg?branch=master&style=flat

@@ -4,7 +4,7 @@ Bemy is a CLI helper for auto-generation BEM structure. Especialy usefull with w
 
 ##Install
 ```bash
-npm -g i bemy
+npm i -g bemy
 ```
 ##Usage
 ```bash

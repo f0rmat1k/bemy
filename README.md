@@ -12,9 +12,9 @@ bemy [options]
 ```
 ###CLI options
 `-t [task name]` — name of the called task. default: 'auto';  
-`-f [path]` — required. Path to BEM node (folder or file);  
+`-f [path]` — path to BEM node (folder or file);  
 `-p [file list]` — file types list for task of `creation`. Available following file types: `-p "css js deps priv bh"`. Also you can use short notation `p c j b d`. You can add you own file types and shortcuts at config.json.  
-`-g` — adding into git for created files (invokes git add for each file);  
+`-g` — adding into git for created files (calls `git add` for each file);  
 `-c [config path]` — path of your own config json file. By default using config.json from bemy directory;  
 `-o` — to open the file after creation. Creation command configured in config.json in section `editor-open-command`. Default value is `wstorm {{file-path}}:{{line-number}}`. See more details at below in section `Configuring`.
 

@@ -31,11 +31,127 @@ var bem = config.bem,
     },
     tasks = {
         auto: DEFAULT_ACTIONS[BEM_INFO.type],
-        create: startCreating.bind(this, prompt)
-    };
+        create: startCreating.bind(this, prompt),
+        rename: rename.bind(this, trgPath)
+    },
+    FILE_TYPES = [],
+    EXTENSIONS = function(){
+        var result = {};
+
+        Object.keys(SUFFIXES).forEach(function(shortcut){
+            FILE_TYPES.push(SUFFIXES[shortcut]);
+
+            var shortcuts = shortcut.split(/\s/ig);
+            if (shortcuts.length > 1) {
+                shortcuts.forEach(function(current_shortcut){
+                    result[current_shortcut] = SUFFIXES[shortcut];
+                });
+            } else {
+                result[shortcut] = SUFFIXES[shortcut];
+            }
+        });
+
+        return result;
+    }();
 
 var task = options.t || 'auto';
 tasks[task]();
+
+function rename(nodePath, originNode){
+    var nodeInfo = bemInfo({ trgPath: nodePath });
+
+    if (nodeInfo.isFile && !originNode) {
+        rename(path.dirname(nodePath));
+        return;
+    }
+
+    originNode = originNode || {
+        originalInfo: bemInfo({ trgPath: nodePath }),
+        path: nodePath,
+        type: nodeInfo.nodeType,
+        newName: prompt[0],
+        name: nodeInfo[nodeInfo.nodeType + 'Name']
+            .replace(bem.separators.elem, '')
+            .replace(bem.separators.mod, '')
+            .replace(bem.separators.modVal, '')
+    };
+
+    var dirName = path.basename(nodePath),
+        nodeParent = path.resolve(nodePath, '../'),
+        newDirName = dirName.replace(originNode.name, originNode.newName),
+        newDirPath = path.resolve(nodeParent, newDirName);
+
+    fs.renameSync(nodePath, newDirPath);
+
+    if (options.g) gitAddTrg(nodeParent, newDirPath);
+
+    var nodes = getValidDirNodes(nodePath, newDirPath, originNode.originalInfo);
+
+    nodes.forEach(function(node){
+        var oldChildPath = path.resolve(nodePath, node),
+            currentChildPath = path.resolve(newDirPath, node),
+            childInfo = bemInfo({
+                trgPath: oldChildPath,
+                isFile: bemInfo({ trgPath: currentChildPath }).isFile
+            }),
+            newChildPath = path.resolve(newDirPath, node.replace(originNode.name, originNode.newName));
+
+        if (childInfo.isFile) {
+            fs.renameSync(currentChildPath, newChildPath);
+
+            if (options.g) gitAddTrg(nodeParent, newChildPath);
+        } else {
+            rename(newChildPath, originNode);
+        }
+    });
+}
+
+function getValidDirNodes(oldNodePath, newNodePath, originalInfo){
+    return fs.readdirSync(newNodePath).filter(function(child){
+        return isValidNode(child, oldNodePath, newNodePath, originalInfo);
+    });
+}
+
+function isValidNode(child, oldParentPath, newParentPath, originalInfo){
+    var parentInfo = bemInfo({ trgPath: oldParentPath }),
+        childPath = path.resolve(oldParentPath, child),
+        newChildPath = path.resolve(newParentPath, child),
+        isValid;
+
+        var childInfo = bemInfo({
+            trgPath: childPath,
+            isFile: bemInfo({ trgPath: newChildPath }).isFile
+        });
+
+    if (childInfo.isFile) {
+        if (!childInfo.type) {
+            isValid = false;
+        } else {
+            FILE_TYPES.forEach(function(fileType){
+                if (child.indexOf(fileType) !== -1) {
+                    if (childInfo.ownInfo.blockName !== originalInfo.blockName) {
+                        isValid = false;
+                    } else if (parentInfo.isElem && childInfo.ownInfo.elemName !== parentInfo.elemName) {
+                        isValid = false;
+                    } else if (parentInfo.isMod && childInfo.ownInfo.modName !== parentInfo.modName) {
+                        isValid = false;
+                    } else {
+                        isValid = true;
+                    }
+                }
+            });
+        }
+    } else {
+        switch (parentInfo.nodeType) {
+            case 'block': isValid = childInfo.isElem || childInfo.isMod; break;
+            case 'elem': isValid = childInfo.isMod; break;
+
+            default: isValid = false;
+        }
+    }
+
+    return isValid;
+}
 
 function startCreating(fileTypes){
     fileTypes.forEach(function(fileType){
@@ -158,7 +274,7 @@ function createFile(file, type, trg, modVal, cursorPos){
 
     if (info.isFile) trg = path.dirname(trg);
 
-    var p = path.join(trg, info.bemName + modVal + SUFFIXES[type]);
+    var p = path.join(trg, info.bemName + modVal + EXTENSIONS[type]);
 
     if (!fs.existsSync(p)) {
         fs.writeFileSync(p, file);

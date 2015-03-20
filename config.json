@@ -1,15 +1,10 @@
 {
   "suffixes": {
-    "css": ".css",
-    "c": ".css",
-    "js": ".js",
-    "j": ".js",
-    "deps": ".deps.js",
-    "d": ".deps.js",
-    "bh": ".bh.js",
-    "b": ".bh.js",
-    "priv": ".priv.js",
-    "p": ".priv.js"
+    "css c": ".css",
+    "js j": ".js",
+    "deps d": ".deps.js",
+    "bh b": ".bh.js",
+    "priv p": ".priv.js"
   },
   "file-templates": {
     "js": "tmp/js-template.js",

@@ -16,7 +16,6 @@ describe('Files creating', function(){
         [
             'config.json',
             'config_custon-separators.json'
-
         ].forEach(function(configName){
                 var configPath = path.resolve('test', configName),
                     config = JSON.parse(fs.readFileSync(configPath, 'utf-8')),

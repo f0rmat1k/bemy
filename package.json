@@ -1,7 +1,9 @@
 {
   "name": "bemy",
-  "description": "Helper for auto-creation BEM dir and file structure",
+  "description": "Helper for auto-creation BEM directory and file structure",
   "main": "bemy.js",
+  "author": "Anton Grischenko <f0rmateg@yandex.ru>",
+  "license": "MIT",
   "scripts": {
     "test": "mocha"
   },
@@ -24,5 +26,8 @@
     "fs-extra": "^0.16.5",
     "execSync": "^1.0.2"
   },
-  "bin": "./bemy.js"
+  "bin": "./bemy.js",
+  "bugs": {
+    "url": "https://github.com/f0rmat1k/bemy/issues"
+  }
 }

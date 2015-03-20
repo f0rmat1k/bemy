@@ -8,31 +8,68 @@ module.exports = function(options){
         separators = (options.bem && options.bem.separators) || { elem: '__', mod: '_', modVal: '_'},
         allowedSymbols = options.bem && options.bem['allowed-name-symbols-regexp'] || '[-a-z0-9]';
 
+    if (!trgPath) throw new Error('Required path');
+
     try { info.stat = fs.statSync(trgPath); } catch (e) { }
 
-    info.isFile = info.stat && info.stat.isFile() || isFile;
+    info.isFile = info.stat && info.stat.isFile() || isFile || false;
     info.isDir = info.stat && info.stat.isDirectory() || !info.isFile;
     info.type = getTargetType(info.isFile, trgPath, options.bem);
-    info.dirName = getDirNameByPath(trgPath, info.isFile);
+    info.dirPath = getDirPath(trgPath, info.isFile);
+    info.dirName = getDirNameByPath(info.dirPath);
+    info.fileName = getFileNameByPath(trgPath, info.isFile);
 
     info.isBlock = isBlock(info.dirName, separators, options.bem);
     info.isElem = isElem(info.dirName, separators, allowedSymbols);
     info.isMod = isMod(info.dirName, separators, allowedSymbols);
 
+    info.nodeType = info.isBlock ? 'block' : info.isElem ? 'elem' : info.isMod ? 'mod' : undefined;
+
     info.blockName = getBlockName(trgPath, info.isBlock, info.isFile, options.bem, allowedSymbols);
     info.elemName = getElemName(info.isElem, info.isMod, info.dirName, trgPath, options.bem);
     info.modName = getModName(info.isMod, info.dirName);
     info.bemName = getBemName(info.blockName, info.elemName, info.modName, options.bem);
+    info.ownInfo = getOwnInfo(info, separators, allowedSymbols);
 
     return info;
 };
+
+function getOwnInfo(info, separators, allowedSymbols){
+    if (!info.isFile) return {
+        blockName: info.blockName,
+        elemName: info.elemName,
+        modName: info.modName
+    };
+    var blockRegExp = new RegExp('^(' + allowedSymbols + '+)', 'i'),
+        elemRegExp = new RegExp(separators.elem + allowedSymbols + '+', 'i'),
+        modRegExp = new RegExp('(' + separators.mod + allowedSymbols + '+)' ,'i'),
+        elemModRegExp = new RegExp(separators.elem + allowedSymbols + '+(' + separators.mod + allowedSymbols + '+)', 'i'),
+
+        blockName = (info.fileName.match(blockRegExp) || [])[0],
+        elemName = (info.fileName.match(elemRegExp) || [])[0] || '',
+        modName = elemName ? (info.fileName.match(elemModRegExp) || [])[1] : (info.fileName.match(modRegExp) || [])[1] || '';
+
+    return {
+        blockName: blockName,
+        elemName: elemName,
+        modName: modName
+    };
+}
+
+function getFileNameByPath(trgPath, isFile){
+    return isFile ? path.basename(trgPath) : '';
+}
 
 function getTargetType(isFile, trgPath, bem){
     return isFile ? detectFileType(trgPath) : detectDirType(trgPath, bem);
 }
 
-function getDirNameByPath(p, isFile){
-    return isFile ? path.basename(path.dirname(p)) : path.basename(p);
+function getDirPath(trgPath, isFile){
+    return isFile ? path.dirname(trgPath) : trgPath;
+}
+
+function getDirNameByPath(trgPath){
+    return path.basename(trgPath);
 }
 
 function isBlock(dirName, separators){
@@ -91,6 +128,7 @@ function getModName(isMod, dirName){
     return isMod ? dirName : '';
 }
 
+//todo
 function detectFileType(targetFile) {
     var filename = path.basename(targetFile);
 

@@ -1,27 +1,34 @@
 {
-  "suffixes": {
-    "css": ".css",
-    "c": ".css",
-    "js": ".js",
-    "j": ".js",
-    "deps": ".deps.js",
-    "d": ".deps.js",
-    "bh": ".bh.js",
-    "b": ".bh.js",
-    "priv": ".priv.js",
-    "p": ".priv.js"
-  },
-  "file-templates": {
-    "js": "tmp/js-template.js",
-    "j": "tmp/js-template.js",
-    "css": "tmp/css-template.css",
-    "c": "tmp/css-template.css",
-    "bh": "tmp/bh-template.js",
-    "b": "tmp/bh-template.js",
-    "deps": "test/deps-template.js",
-    "d": "test/deps-template.js",
-    "priv": "tmp/priv-template.js",
-    "p": "tmp/priv-template.js"
+  "file-types": {
+    "css": {
+      "suffix": ".css",
+      "shortcuts": [ "c", "css" ],
+      "rename": ".{{bemNode}}",
+      "template": "tmp/css-template.css"
+    },
+    "deps": {
+      "suffix": ".deps.js",
+      "shortcuts": [ "d", "deps" ],
+      "template": "test/deps-template.js"
+    },
+    "bh": {
+      "suffix": ".bh.js",
+      "shortcuts": [ "b", "bh" ],
+      "rename": "match('{{bemNode}}",
+      "template": "tmp/bh-template.js"
+    },
+    "priv": {
+      "suffix": ".priv.js",
+      "shortcuts": [ "p", "priv" ],
+      "rename": [ "declare('{{bemNode}}", "block: '{{bemNode}}'", "block:'{{bemNode}}'" ],
+      "template": "tmp/priv-template.js"
+    },
+    "js": {
+      "suffix": ".js",
+      "shortcuts": [ "j", "js" ],
+      "rename": "decl('{{bemNode}}",
+      "template": "tmp/js-template.js"
+    }
   },
   "deps_task": {
     "files": [ "css" ]

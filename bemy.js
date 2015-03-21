@@ -12,53 +12,46 @@ var options = minimist(process.argv.slice(2)),
     trgPath = options.f,
     configPath = options.c ? path.resolve(options.c) : path.join(__dirname, 'config.json'),
     prompt = options.p ? options.p.toString().split(/\s/) : '',
-    bemInfo = require('./bem-info.js'),
     config = JSON.parse(fs.readFileSync(configPath, 'utf-8')),
-    ownConfig = options.c;
+    isOwnConfig = options.c,
+    bemInfo = require('./bem-info.js')(config);
 
 var bem = config.bem,
-    BEM_INFO = bemInfo({
-        trgPath: trgPath,
-        bem: bem
-    }),
-    SUFFIXES = config.suffixes,
-    FILE_TEMPLATES = config['file-templates'],
+    SHORTCUTS = function(){
+        var fileTypes = config['file-types'],
+            shortcuts = {};
+
+        Object.keys(fileTypes).forEach(function(fileType){
+            try {
+                var cuts = fileTypes[fileType].shortcuts;
+                if (!Array.isArray(cuts)) cuts = [ cuts ];
+
+                cuts.forEach(function(cut){
+                    shortcuts[cut] = fileTypes[fileType];
+                });
+            } catch (e) {}
+        });
+
+        return shortcuts;
+    }(),
     DEFAULT_ACTIONS = {
         blockDir: startCreating.bind(this, ['css']),
         deps: createStructureByDeps,
         elemDir: startCreating.bind(this, ['css']),
         modDir: startCreating.bind(this, ['css'])
     },
+    BEM_INFO = bemInfo(trgPath),
     tasks = {
         auto: DEFAULT_ACTIONS[BEM_INFO.type],
         create: startCreating.bind(this, prompt),
         rename: rename.bind(this, trgPath)
-    },
-    FILE_TYPES = [],
-    EXTENSIONS = function(){
-        var result = {};
-
-        Object.keys(SUFFIXES).forEach(function(shortcut){
-            FILE_TYPES.push(SUFFIXES[shortcut]);
-
-            var shortcuts = shortcut.split(/\s/ig);
-            if (shortcuts.length > 1) {
-                shortcuts.forEach(function(current_shortcut){
-                    result[current_shortcut] = SUFFIXES[shortcut];
-                });
-            } else {
-                result[shortcut] = SUFFIXES[shortcut];
-            }
-        });
-
-        return result;
-    }();
+    };
 
 var task = options.t || 'auto';
 tasks[task]();
 
 function rename(nodePath, originNode){
-    var nodeInfo = bemInfo({ trgPath: nodePath });
+    var nodeInfo = bemInfo(nodePath);
 
     if (nodeInfo.isFile && !originNode) {
         rename(path.dirname(nodePath));
@@ -66,7 +59,7 @@ function rename(nodePath, originNode){
     }
 
     originNode = originNode || {
-        originalInfo: bemInfo({ trgPath: nodePath }),
+        originalInfo: bemInfo(nodePath),
         path: nodePath,
         type: nodeInfo.nodeType,
         newName: prompt[0],
@@ -83,27 +76,46 @@ function rename(nodePath, originNode){
 
     fs.renameSync(nodePath, newDirPath);
 
-    if (options.g) gitAddTrg(nodeParent, newDirPath);
-
     var nodes = getValidDirNodes(nodePath, newDirPath, originNode.originalInfo);
 
     nodes.forEach(function(node){
         var oldChildPath = path.resolve(nodePath, node),
             currentChildPath = path.resolve(newDirPath, node),
-            childInfo = bemInfo({
-                trgPath: oldChildPath,
-                isFile: bemInfo({ trgPath: currentChildPath }).isFile
-            }),
+            childInfo = bemInfo(oldChildPath, bemInfo(currentChildPath).isFile),
             newChildPath = path.resolve(newDirPath, node.replace(originNode.name, originNode.newName));
 
         if (childInfo.isFile) {
             fs.renameSync(currentChildPath, newChildPath);
+            if (options.d) {
+                var file = fs.readFileSync(newChildPath, 'utf-8'),
+                    newFileInfo = bemInfo(newChildPath),
+                    newName = newFileInfo.bemName,
+                    oldName = newName.replace(prompt[0], originNode.name),
+                    renameRule = config['file-types'][newFileInfo.type].rename,
+                    oldString = oldName,
+                    newString = newName;
 
-            if (options.g) gitAddTrg(nodeParent, newChildPath);
+                if (renameRule) {
+                    if (!Array.isArray(renameRule)) {
+                        renameRule = [renameRule];
+                    }
+
+                    renameRule.forEach(function(rule){
+                        oldString = escapeRegExp(rule.replace(/{{bemNode}}/g, oldName));
+                        newString = rule.replace(/{{bemNode}}/g, newName);
+
+                        file = file.replace(new RegExp(oldString, 'g'), newString);
+                    });
+                }
+
+                fs.writeFileSync(newChildPath, file);
+            }
         } else {
             rename(newChildPath, originNode);
         }
     });
+
+    if (options.g) gitAddTrg(nodeParent, newDirPath);
 }
 
 function getValidDirNodes(oldNodePath, newNodePath, originalInfo){
@@ -113,22 +125,22 @@ function getValidDirNodes(oldNodePath, newNodePath, originalInfo){
 }
 
 function isValidNode(child, oldParentPath, newParentPath, originalInfo){
-    var parentInfo = bemInfo({ trgPath: oldParentPath }),
+    var parentInfo = bemInfo(oldParentPath),
         childPath = path.resolve(oldParentPath, child),
         newChildPath = path.resolve(newParentPath, child),
         isValid;
 
-        var childInfo = bemInfo({
-            trgPath: childPath,
-            isFile: bemInfo({ trgPath: newChildPath }).isFile
-        });
+        var childInfo = bemInfo(childPath, bemInfo(newChildPath).isFile);
 
     if (childInfo.isFile) {
         if (!childInfo.type) {
             isValid = false;
         } else {
-            FILE_TYPES.forEach(function(fileType){
-                if (child.indexOf(fileType) !== -1) {
+            var fileTypes = config['file-types'];
+            Object.keys(fileTypes).forEach(function(fileType){
+                var suffix = fileTypes[fileType].suffix;
+
+                if (child.indexOf(suffix) !== -1) {
                     if (childInfo.ownInfo.blockName !== originalInfo.blockName) {
                         isValid = false;
                     } else if (parentInfo.isElem && childInfo.ownInfo.elemName !== parentInfo.elemName) {
@@ -162,14 +174,13 @@ function startCreating(fileTypes){
 function createFileFromTemplate(fileType, trg, modVal){
     trg = trg || trgPath;
 
-    var tmpPath = FILE_TEMPLATES[fileType];
-
-    if (!tmpPath) {
-        console.error('Unknown file type');
-        return;
+    var tmpPath;
+    try { tmpPath = SHORTCUTS[fileType].template; } catch (e) {
+        tmpPath = 'tmp/empty.tmp'
     }
 
-    if (!ownConfig) {
+    //todo resolve
+    if (!isOwnConfig) {
         tmpPath = path.join(__dirname, tmpPath);
     }
 
@@ -183,10 +194,7 @@ function createFileFromTemplate(fileType, trg, modVal){
 }
 
 function insertName(file, trg, modVal){
-    var info = bemInfo({
-        trgPath: trg,
-        bem: bem
-    });
+    var info = bemInfo(trg);
 
     return file
         .replace(/{{blockName}}/g, info.blockName)
@@ -209,14 +217,14 @@ function createNode(nodeObj){
     var blockDir = path.dirname(trgPath),
         nodePath,
         fileTypes = config.deps_task ? config.deps_task.files : [],
-        modSeparator = bem.separators.mod || '_',
-        modValSeparator = bem.separators.modVal || '_',
+        modSeparator = bem.separators.mod,
+        modValSeparator = bem.separators.modVal,
         modVal = nodeObj.modVal ? modValSeparator + nodeObj.modVal : '';
 
     if (nodeObj.elem) {
         if (BEM_INFO.isElem) return;
 
-        var elemSeparator = bem.separators.elem || '__';
+        var elemSeparator = bem.separators.elem;
 
         nodePath = path.join(blockDir, elemSeparator + nodeObj.elem);
 
@@ -267,14 +275,11 @@ function createFile(file, type, trg, modVal, cursorPos){
 
     modVal = modVal || '';
 
-    var info = bemInfo({
-        trgPath: trg,
-        bem: bem
-    });
+    var info = bemInfo(trg);
 
     if (info.isFile) trg = path.dirname(trg);
 
-    var p = path.join(trg, info.bemName + modVal + EXTENSIONS[type]);
+    var p = path.join(trg, info.bemName + modVal + SHORTCUTS[type].suffix);
 
     if (!fs.existsSync(p)) {
         fs.writeFileSync(p, file);
@@ -318,9 +323,9 @@ function parseString(dep) {
     var obj = {},
         allowedSymbols = bem['allowed-name-symbols-regexp'],
         blockRegExp = new RegExp(allowedSymbols + '+', 'i'),
-        elemSeparator = bem && bem.separators.elem || '__',
-        modSeparator = bem && bem.separators.mod || '_',
-        modValSeparator = bem && bem.separators.modVal || '_';
+        elemSeparator = bem.separators.elem,
+        modSeparator = bem.separators.mod,
+        modValSeparator = bem.separators.modVal;
 
     var block = (dep.match(blockRegExp) || [])[0],
         elem = (dep.match(new RegExp('^' + allowedSymbols + '+' + elemSeparator + '(' + allowedSymbols + '+)', 'i')) || [])[1],
@@ -333,4 +338,8 @@ function parseString(dep) {
     modVal && (obj['modVal'] = modVal);
 
     return obj;
+}
+
+function escapeRegExp(str) {
+    return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
 }

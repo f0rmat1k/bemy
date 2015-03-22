@@ -96,6 +96,7 @@ function getBlockName(trgPath, isBlock, isFile, bem, allowedSymbols){
 
     if (isBlock) {
         var blockRegExp = new RegExp('(' + allowedSymbols + '+)\/?$', 'i');
+
         return trgPath.match(blockRegExp)[1];
     }
 

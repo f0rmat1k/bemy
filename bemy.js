@@ -9,9 +9,9 @@ var exec = require('child_process').exec;
 var depsNormalize = require('deps-normalize');
 
 var options = minimist(process.argv.slice(2)),
-    trgPath = options.f,
+    trgPath = options.f ? path.resolve(options.f) : process.env.PWD,
     configPath = options.c ? path.resolve(options.c) : path.join(__dirname, 'config.json'),
-    prompt = options.p ? options.p.toString().split(/\s/) : '',
+    prompt = options.p ? options.p.toString().split(/\s/) : options._,
     config = JSON.parse(fs.readFileSync(configPath, 'utf-8')),
     isOwnConfig = options.c,
     bemInfo = require('./bem-info.js')(config);
@@ -35,10 +35,10 @@ var bem = config.bem,
         return shortcuts;
     }(),
     DEFAULT_ACTIONS = {
-        blockDir: startCreating.bind(this, ['css']),
+        blockDir: startCreating.bind(this, prompt),
         deps: createStructureByDeps,
-        elemDir: startCreating.bind(this, ['css']),
-        modDir: startCreating.bind(this, ['css'])
+        elemDir: startCreating.bind(this, prompt),
+        modDir: startCreating.bind(this, prompt)
     },
     BEM_INFO = bemInfo(trgPath),
     tasks = {
@@ -166,6 +166,7 @@ function isValidNode(child, oldParentPath, newParentPath, originalInfo){
 }
 
 function startCreating(fileTypes){
+    fileTypes = fileTypes || ['css'];
     fileTypes.forEach(function(fileType){
         createFileFromTemplate(fileType);
     });

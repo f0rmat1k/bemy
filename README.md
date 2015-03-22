@@ -42,7 +42,7 @@ Result: called 'create' task and appear `some-block/some-block.css` and `some-bl
 `-o` — to open the file after creation. This command configured in config.json in section `editor-open-command`. Default value is `wstorm {{file-path}}:{{line-number}}`. See more details at below in section `Configuring`.;
 `-p [file list]` — file types list. Available following file types: `-p "css js deps priv bh"`. Also you can use short notation `p c j b d`. You can add you own file types and shortcuts at config.json. Also you can set file types with just enumeration before single options keys, e.g. `bemy c j -o -g`.
 
-Webstorm requiered `-f [path]`. An example of using bemy with `external tools` of webstorm for the task of creation:  
+Webstorm is required `-f [path]`. An example of using bemy with `external tools` of webstorm for the task of creation:  
 ![](https://cloud.githubusercontent.com/assets/769992/6725632/0232f4ee-ce2e-11e4-942e-7845381663ed.png)  
 Don't forget to configure hotkey for task running (e.g. `ctrl + c`) at `keymap` section.
 
@@ -56,7 +56,7 @@ Recursively renames current node and its children. `-d` turn on deep mode and th
 `-d` — turn on deep mode with renaming of files content;  
 `-p` — new BEM node name;
 
-Webstorm requiered `-f [path]`. An example of using bemy with `external tools` of webstorm for the task of renaming:  
+Webstorm is required `-f [path]`. An example of using bemy with `external tools` of webstorm for the task of renaming:  
 ![](https://cloud.githubusercontent.com/assets/769992/6766361/e3006d96-d025-11e4-948e-1f11a663f2ea.png)  
 
 ###The autotask  
@@ -76,7 +76,7 @@ bemy
 Called autotask and created the only css file `some-block.css`.  
 You should set `-f` when you want set not current directory or call bemy on `deps.js` file.  
 
-Webstorm requiered `-f [path]`. An example of using bemy with `external tools` of webstorm for the autotask:  
+Webstorm is required `-f [path]`. An example of using bemy with `external tools` of webstorm for the autotask:  
 ![](https://cloud.githubusercontent.com/assets/769992/6725778/23a5188a-ce30-11e4-828d-0d590fb26e08.png)  
 Don't forget to configure hotkey for task running (e.g. `ctrl + a`) at `keymap` section.
 

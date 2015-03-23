@@ -166,7 +166,8 @@ function isValidNode(child, oldParentPath, newParentPath, originalInfo){
 }
 
 function startCreating(fileTypes){
-    fileTypes = fileTypes || ['css'];
+    if (!fileTypes || fileTypes.length === 0) fileTypes = ['css'];
+
     fileTypes.forEach(function(fileType){
         createFileFromTemplate(fileType);
     });

@@ -118,6 +118,8 @@ function rename(nodePath, originNode){
 
                 fs.writeFileSync(newChildPath, file);
             }
+
+            if (config.logging === true) console.log('Renamed:\n' + newChildPath + '\n to \n' + currentChildPath);
         } else {
             rename(newChildPath, originNode);
         }
@@ -310,6 +312,8 @@ function createFile(file, type, trg, modVal, cursorPos){
 
     if (!fs.existsSync(p)) {
         fs.writeFileSync(p, file);
+
+        if (config.logging === true) console.log('\nCreated:\n' + p);
 
         if (options.g) gitAddTrg(trg, p);
 

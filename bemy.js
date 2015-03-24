@@ -54,7 +54,8 @@ var bem = config.bem,
         rename: rename.bind(this, trgPath)
     };
 
-var task = options.t || prompt.length > 0 ? 'create' : 'auto';
+var task = options.t || (prompt.length > 0 ? 'create' : 'auto');
+
 tasks[task]();
 
 function rename(nodePath, originNode){

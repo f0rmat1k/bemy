@@ -12,7 +12,7 @@ npm i -g bemy
 bemy -t [task] -f [path] [options]
 ```
 
-When you call bemy on files it is like you call bemy on the folder contains this file. So this two variants are equal: `-f ~/testBlock/__elem` and `-f ~/testBlock/__elem/testBlock__elem.bh.js`.  
+When you call the task of creation on files it is like you call bemy on the folder contains this file. So this two variants are equal: `-f ~/testBlock/__elem c j` and `-f ~/testBlock/__elem/testBlock__elem.bh.js c j`.  
 
 
 Starting with version 2.1 `-t` and `-p` and `-f` is no more required. Task seleced depend on call bemy. See details on tasks description below.  
@@ -106,7 +106,7 @@ For example, default css template contain:
 }
 ```
 `deps_task` – options for autotask when it called on deps file. `files` – list of file types to be created in addition to folders.  
-`editor-open-command` — command to be called after creating the file. There are two placeholders: 1) {{file-path}} to be replaced with relevant file path. 2) {{line-number}} will be taken from {{cursor}} position of relevant template.  Default command is `wstorm {{file-path}}:{{line-number}}`, so if you use webstorm you need to create CLI launcher at webstorm with same name (Tools / Create Command-line Lanucher). If u use old wersion of webstorm you can try to use `/Applications/WebStorm.app/Contents/MacOS/webide` for `editor-open-command`.  
+`editor-open-command` — command to be called after creating the file. There are two placeholders: 1) {{file-path}} to be replaced with relevant file path. 2) {{line-number}} will be taken from {{cursor}} position of relevant template.  Default command is `wstorm {{file-path}}:{{line-number}}`, so if you use webstorm you need to create CLI launcher at webstorm with same name (Tools / Create Command-line Lanucher). If u use old version of webstorm you can try to use `/Applications/WebStorm.app/Contents/MacOS/webide` for `editor-open-command`.  
 `bem` — your BEM options. If you use own `separators` you must set right `allowed-name-symbols-regexp`.
 
 [travis-url]: http://travis-ci.org/f0rmat1k/bemy

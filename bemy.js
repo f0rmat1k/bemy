@@ -42,12 +42,19 @@ var bem = config.bem,
     },
     BEM_INFO = bemInfo(trgPath),
     tasks = {
-        auto: DEFAULT_ACTIONS[BEM_INFO.type],
+        auto: function(){
+            var defaultAction = DEFAULT_ACTIONS[BEM_INFO.type];
+            if (defaultAction) {
+                defaultAction();
+            } else {
+                console.error("You can't run autotask on unsupported files (Currently supports only *.deps.js)");
+            }
+        },
         create: startCreating.bind(this, prompt),
         rename: rename.bind(this, trgPath)
     };
 
-var task = options.t || 'auto';
+var task = options.t || prompt.length > 0 ? 'create' : 'auto';
 tasks[task]();
 
 function rename(nodePath, originNode){
@@ -165,8 +172,25 @@ function isValidNode(child, oldParentPath, newParentPath, originalInfo){
     return isValid;
 }
 
+function normalizeFileTypes(fileTypes){
+    return fileTypes.filter(function(fileType){
+        if (!!SHORTCUTS[fileType]) return true;
+        console.log('Invalid file type: ' + fileType + '. ');
+        return false;
+    });
+}
+
 function startCreating(fileTypes){
-    if (!fileTypes || fileTypes.length === 0) fileTypes = ['css'];
+    if (!fileTypes || fileTypes.length === 0) {
+        fileTypes = ['css']
+    } else {
+        fileTypes = normalizeFileTypes(fileTypes);
+    }
+
+    if (fileTypes.length === 0) {
+        console.log('Nothing to create');
+        return;
+    }
 
     fileTypes.forEach(function(fileType){
         createFileFromTemplate(fileType);

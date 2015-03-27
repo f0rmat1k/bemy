@@ -293,10 +293,22 @@ function depsToObj(data){
 }
 
 function getNormalaizedDeps(data) {
-    var mustDeps = depsNormalize(data.mustDeps, { parseString: parseString }),
-        shouldDeps = depsNormalize(data.shouldDeps, { parseString: parseString });
+    var mustDeps, shouldDeps;
 
-    return mustDeps.concat(shouldDeps);
+    if (Array.isArray(data)) {
+        data.forEach(function(obj){
+            if (obj.mustDeps) mustDeps = obj.mustDeps;
+            if (obj.shouldDeps) shouldDeps = obj.shouldDeps;
+        });
+    } else {
+        mustDeps = data.mustDeps;
+        shouldDeps = data.shouldDeps;
+    }
+
+    var normalizedMustDeps = depsNormalize(mustDeps, { parseString: parseString }),
+        normalizedShouldDeps = depsNormalize(shouldDeps, { parseString: parseString });
+
+    return normalizedMustDeps.concat(normalizedShouldDeps);
 }
 
 function createFile(file, type, trg, modVal, cursorPos){

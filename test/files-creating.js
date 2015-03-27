@@ -15,8 +15,9 @@ describe('Files creating', function(){
     it ('Create task: should be correct blocks files creating', function(done){
         [
             'config.json',
-            'config_custon-separators.json'
-        ].forEach(function(configName){
+            'config_custon-separators.json',
+            'config.json'
+        ].forEach(function(configName, i){
                 var configPath = path.resolve('test', configName),
                     config = JSON.parse(fs.readFileSync(configPath, 'utf-8')),
                     separators = config.bem.separators;
@@ -27,7 +28,7 @@ describe('Files creating', function(){
                 fs.mkdirSync(blockDir);
 
                 var deps = getDeps(separators);
-                createDepsTpl(deps);
+                createDepsTpl(deps, i);
 
                 testCreatingTask(configPath);
                 testDepsCreationFiles(deps, configPath);
@@ -71,7 +72,7 @@ function testDepsCreationFiles(deps, configPath){
     });
 }
 
-function createDepsTpl(deps){
+function createDepsTpl(deps, i){
     var shouldDeps = Object.keys(deps).map(function(key){
         return deps[key];
     });
@@ -79,7 +80,13 @@ function createDepsTpl(deps){
     var obj = JSON.stringify(shouldDeps);
 
     var depsPath = path.resolve('test/', 'deps-template.js');
-    var depsFile = '({ shouldDeps: ' + obj  + '})';
+    var depsFile;
+
+    if (i === 2) {
+        depsFile = '([ { tech: "js", shouldDeps: [ { block: "foo", tech: "bemhtml" } ] }, { shouldDeps: ' + obj  + '} ]);';
+    } else {
+        depsFile = '({ shouldDeps: ' + obj  + '})';
+    }
 
     fs.writeFileSync(depsPath, depsFile);
 }

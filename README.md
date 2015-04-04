@@ -1,6 +1,6 @@
 # Bemy
 [![Build Status][travis-image]][travis-url]  
-Bemy is a CLI helper for auto-generation and renaming BEM structure. Especialy usefull with `Webstorm` (using external tools). It allows to generate folder and file structure using deps.js ([enb](http://enb-make.info) dependencies format) file with one command (or hotkey). For all file types taking templates with including BEM names into placeholders. You can tune it and you can add your own file types. Bemy can run three usable tasks: 'create', 'rename' and 'auto';
+Bemy is a CLI helper for auto-generation and renaming BEM structure. Especialy usefull with `Webstorm` (using external tools). It allows to generate folder and file structure using deps.js ([enb](http://enb-make.info) dependencies format) file with one command (or hotkey). For all file types taking templates with including BEM names into placeholders. You can tune it and you can add your own file types. Bemy can run three usable tasks: **create**, **rename**, and **auto**;
 
 ## Install
 ```bash
@@ -38,7 +38,7 @@ bemy c j
 Result: called 'create' task and appear `some-block/some-block.css` and `some-block/some-block.js`.  
 
 #### Options
-`-o` — to open the file after creation. This command configured in `.bemy.json` in section `editor-open-command`. Default value is `wstorm {{file-path}}:{{line-number}}`. See more details at below in section `Configuring`.;
+`-o` — to open the file after creation. This command configured in `.bemy.json` in section `editor-open-command`. Default value is `wstorm {{file-path}}:{{line-number}}`. See more details at below in section `Configuring`;  
 `-p [file list]` — file types list. Available following file types: `-p "css js deps priv bh"`. Also you can use short notation `p c j b d`. You can add you own file types and shortcuts into `.bemy.json`. Also you can set file types with just enumeration before single options keys, e.g. `bemy c j -o -g`.
 
 Webstorm is required `-f [path]`. An example of using bemy with `external tools` of webstorm for the task of creation:  

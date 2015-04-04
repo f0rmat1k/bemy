@@ -80,11 +80,10 @@ Webstorm is required `-f [path]`. An example of using bemy with `external tools`
 ![](https://cloud.githubusercontent.com/assets/769992/6725778/23a5188a-ce30-11e4-828d-0d590fb26e08.png)  
 Don't forget to configure hotkey for task running (e.g. `ctrl + a`) at `keymap` section.
 
-### Confgiring
+### Confguring
 `config.json` is in bemy root folder.  
 
-#### Sections
-##### `file-types`
+#### `file-types`
 Description of the used file types.  
 `suffix` used by 'create' when forming file and by 'rename' for files validation (`rename` renames only described files);  
 `shortcuts` — list of short that you can use after `-p` key in Task of creation;  
@@ -105,13 +104,13 @@ For example, default css template contain:
 /* curor will be here, when you use right configured -o key */
 }
 ```
-##### `deps_task`
+#### `deps_task`
 Options for autotask when it called on deps file. `files` – list of file types to be created in addition to folders.  
 
-##### `editor-open-command`
+#### `editor-open-command`
 Command to be called after creating the file. There are two placeholders: 1) {{file-path}} to be replaced with relevant file path. 2) {{line-number}} will be taken from {{cursor}} position of relevant template.  Default command is `wstorm {{file-path}}:{{line-number}}`, so if you use webstorm you need to create CLI launcher at webstorm with same name (Tools / Create Command-line Lanucher). If u use old version of webstorm you can try to use `/Applications/WebStorm.app/Contents/MacOS/webide` for `editor-open-command`.  
 
-##### `bem`
+#### `bem`
 Your BEM options. If you use own `separators` you must set right `allowed-name-symbols-regexp`.
 
 [travis-url]: http://travis-ci.org/f0rmat1k/bemy

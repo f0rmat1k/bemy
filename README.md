@@ -111,7 +111,9 @@ Options for autotask when it called on deps file. `files` – list of file types
 Command to be called after creating the file. There are two placeholders: 1) {{file-path}} to be replaced with relevant file path. 2) {{line-number}} will be taken from {{cursor}} position of relevant template.  Default command is `wstorm {{file-path}}:{{line-number}}`, so if you use webstorm you need to create CLI launcher at webstorm with same name (Tools / Create Command-line Lanucher). If u use old version of webstorm you can try to use `/Applications/WebStorm.app/Contents/MacOS/webide` for `editor-open-command`.  
 
 #### `bem`
-Your BEM options. If you use own `separators` you must set right `allowed-name-symbols-regexp`.
+Your BEM options. If you use own `separators` you must set right `allowed-name-symbols-regexp`.  
+
+`debug` — to output various information.
 
 [travis-url]: http://travis-ci.org/f0rmat1k/bemy
 [travis-image]: http://img.shields.io/travis/f0rmat1k/bemy.svg?branch=master&style=flat

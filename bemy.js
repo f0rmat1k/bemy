@@ -10,13 +10,17 @@ var depsNormalize = require('deps-normalize');
 
 var options = minimist(process.argv.slice(2)),
     trgPath = options.f ? path.resolve(options.f) : process.env.PWD,
-    configPath = options.c ? path.resolve(options.c) : path.join(__dirname, 'config.json'),
     prompt = options.p ? options.p.toString().split(/\s/) : options._,
-    config = JSON.parse(fs.readFileSync(configPath, 'utf-8')),
-    isOwnConfig = options.c,
-    bemInfo = require('./bem-info.js')(config);
+    ownConfig = options.c,
+    isDebug = options.debug,
+    config = getConfig(ownConfig);
 
-var bem = config.bem,
+if (!config) return;
+
+if (config.debug) isDebug = true;
+
+var bemInfo = require('./bem-info.js')(config),
+    bem = config.bem,
     SHORTCUTS = function(){
         var fileTypes = config['file-types'],
             shortcuts = {};
@@ -124,7 +128,7 @@ function rename(nodePath, originNode){
                 fs.writeFileSync(newChildPath, file);
             }
 
-            if (config.output === true) console.log('Renamed:\n' + newChildPath + '\n to \n' + currentChildPath);
+            if (isDebug) console.log('Renamed:\n' + newChildPath + '\n to \n' + currentChildPath);
         } else {
             rename(newChildPath, originNode);
         }
@@ -214,7 +218,7 @@ function createFileFromTemplate(fileType, trg, modVal){
     }
 
     //todo resolve
-    if (!isOwnConfig) {
+    if (!ownConfig) {
         tmpPath = path.join(__dirname, tmpPath);
     }
 
@@ -332,7 +336,7 @@ function createFile(file, type, trg, modVal, cursorPos){
     if (!fs.existsSync(p)) {
         fs.writeFileSync(p, file);
 
-        if (config.output === true) console.log('\nCreated:\n' + p);
+        if (isDebug) console.log('\nCreated:\n' + p);
 
         //if (options.g) gitAddTrg(trg, [p]);
         if (options.g) {
@@ -399,4 +403,41 @@ function parseString(dep) {
 
 function escapeRegExp(str) {
     return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+}
+
+function getConfig(ownConfig){
+    if (ownConfig === true) {
+        console.error('Error. Path after -c is not specified.');
+        return;
+    }
+
+    var configPath;
+
+    if (ownConfig) {
+        configPath = path.resolve(ownConfig);
+    } else {
+        configPath = getConfigPath(path.dirname(trgPath)) || path.join(__dirname, 'bemy.json');
+    }
+
+    if (isDebug) console.log('Config path: ' + configPath);
+
+    try {
+        var config = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
+    } catch(e) {
+        console.error('Problems with config:\n' + e);
+        return;
+    }
+
+    return config;
+}
+
+function getConfigPath(dir) {
+    if (dir === '/') return;
+
+    var checkPath = path.resolve(dir, 'bemy.json');
+    if (fs.existsSync(checkPath)) {
+        return checkPath;
+    } else {
+        return getConfigPath(path.resolve(dir, '../'));
+    }
 }

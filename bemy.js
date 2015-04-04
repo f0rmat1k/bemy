@@ -12,7 +12,15 @@ var options = minimist(process.argv.slice(2)),
     trgPath = options.f ? path.resolve(options.f) : process.env.PWD,
     prompt = options.p ? options.p.toString().split(/\s/) : options._,
     ownConfig = options.c,
-    isDebug = options.debug,
+    isDebug = options.debug;
+
+if (!trgPath) {
+    console.error('Target path is unknown');
+    return;
+}
+
+var isWindows = process.platform === 'win32',
+    root = isWindows ? escapeRegExp(trgPath).slice(0, 3) : '/',
     config = getConfig(ownConfig);
 
 if (!config) return;
@@ -432,7 +440,16 @@ function getConfig(ownConfig){
 }
 
 function getConfigPath(dir) {
-    if (dir === '/') return;
+    if (dir === root) {
+        if (isWindows) {
+            var homeFilePath = path.resolve(path.resolve(process.env.USERPROFILE), '.bemy.json');
+            
+            if (fs.existsSync(homeFilePath)) {
+                return homeFilePath;
+            }
+            return;
+        } else return;
+    }
 
     var checkPath = path.resolve(dir, '.bemy.json');
     if (fs.existsSync(checkPath)) {

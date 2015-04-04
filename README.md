@@ -21,7 +21,7 @@ Starting with version 2.1 `-t` and `-p` and `-f` is no more required. Task selec
 `-t [task name]` — name of the called task. default: 'auto';  
 `-f [path]` — path to BEM node (folder or file);  
 `-g` — adding into git for created or renamed files (calls `git add` for each file);  
-`-c [config path]` — path of your own config json file. By default used config.json from bemy directory;  
+`-c [config path]` — set path of your own config json file. Read about path working at `Configuring` section.
 
 ### The task of creation  
 Takes arguments with file types and creates files using templates.
@@ -39,8 +39,8 @@ bemy c j
 Result: called 'create' task and appear `some-block/some-block.css` and `some-block/some-block.js`.  
 
 #### Options
-`-o` — to open the file after creation. This command configured in config.json in section `editor-open-command`. Default value is `wstorm {{file-path}}:{{line-number}}`. See more details at below in section `Configuring`.;
-`-p [file list]` — file types list. Available following file types: `-p "css js deps priv bh"`. Also you can use short notation `p c j b d`. You can add you own file types and shortcuts at config.json. Also you can set file types with just enumeration before single options keys, e.g. `bemy c j -o -g`.
+`-o` — to open the file after creation. This command configured in `bemy.json` in section `editor-open-command`. Default value is `wstorm {{file-path}}:{{line-number}}`. See more details at below in section `Configuring`.;
+`-p [file list]` — file types list. Available following file types: `-p "css js deps priv bh"`. Also you can use short notation `p c j b d`. You can add you own file types and shortcuts into `bemy.json`. Also you can set file types with just enumeration before single options keys, e.g. `bemy c j -o -g`.
 
 Webstorm is required `-f [path]`. An example of using bemy with `external tools` of webstorm for the task of creation:  
 ![](https://cloud.githubusercontent.com/assets/769992/6725632/0232f4ee-ce2e-11e4-942e-7845381663ed.png)  
@@ -61,8 +61,8 @@ Webstorm is required `-f [path]`. An example of using bemy with `external tools`
 
 ### The autotask  
 Call default action depend on BEM node. Currently work following variants:
-1. If target is deps-file, creates described elems\mods\elemMods folder structure. And depend on options of config.json also creates elems\mods\elemMods files. By default it's css files. Se `Configuring` section for more details.
-2. Otherwise call create task with default options (equal `-t create -f [path] -p "css"`). Default file types for autotask configurable at config.json.
+1. If target is deps-file, creates described elems\mods\elemMods folder structure. And depend on options of `bemy.json` also creates elems\mods\elemMods files. By default it's css files. Se `Configuring` section for more details.
+2. Otherwise call create task with default options (equal `-t create -f [path] -p "css"`). Default file types for autotask configurable at `bemy.json`.
 
 #### CLI for autotask
 `bemy -f [path]`
@@ -81,7 +81,7 @@ Webstorm is required `-f [path]`. An example of using bemy with `external tools`
 Don't forget to configure hotkey for task running (e.g. `ctrl + a`) at `keymap` section.
 
 ### Confguring
-`config.json` is in bemy root folder.  
+Bemy will try to find bemy.json on the every previous level (like npm) until the root directory, so you can put `bemy.json` into your home directory or project directory if you need different options depend on project. Otherwise bemy wil take `bemy.json` from own directory.  
 
 #### `file-types`
 Description of the used file types.  

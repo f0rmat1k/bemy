@@ -51,8 +51,13 @@ var bem = config.bem,
             }
         },
         create: startCreating.bind(this, prompt),
-        rename: rename.bind(this, trgPath)
+        rename: function(){
+            rename(trgPath);
+            gitAddTrg(BEM_INFO.dirPath, gitQueue);
+        }
     };
+
+var gitQueue = [];
 
 var task = options.t || (prompt.length > 0 ? 'create' : 'auto');
 
@@ -125,7 +130,7 @@ function rename(nodePath, originNode){
         }
     });
 
-    if (options.g) gitAddTrg(nodeParent, newDirPath);
+    if (options.g) gitQueue.push(newDirPath)
 }
 
 function getValidDirNodes(oldNodePath, newNodePath, originalInfo){
@@ -238,6 +243,8 @@ function createStructureByDeps(){
         structureList = getNormalaizedDeps(depsObj);
 
     structureList.forEach(createNode);
+
+    gitAddTrg(BEM_INFO.dirPath, gitQueue);
 }
 
 function createNode(nodeObj){
@@ -327,17 +334,20 @@ function createFile(file, type, trg, modVal, cursorPos){
 
         if (config.output === true) console.log('\nCreated:\n' + p);
 
-        if (options.g) gitAddTrg(trg, p);
-
-        if (options.o) {
-            var editorCmd = config['editor-open-command']
-                .replace('{{file-path}}', p)
-                .replace('{{line-number}}', cursorPos);
-
-            exec(editorCmd, function (error, stdout, stderr) {
-                if (stderr) console.error(stderr);
-            });
+        //if (options.g) gitAddTrg(trg, [p]);
+        if (options.g) {
+            gitQueue.push(p);
         }
+    }
+
+    if (options.o) {
+        var editorCmd = config['editor-open-command']
+            .replace('{{file-path}}', p)
+            .replace('{{line-number}}', cursorPos);
+
+        exec(editorCmd, function (error, stdout, stderr) {
+            if (stderr) console.error(stderr);
+        });
     }
 }
 
@@ -345,8 +355,12 @@ function getTemplate(tmpPath){
     return fs.readFileSync(tmpPath, 'utf-8');
 }
 
-function gitAddTrg(dir, file){
-    exec('cd ' + dir + ' && git add ' + file, function (error, stdout, stderr) {
+function gitAddTrg(dir, files){
+    if (files.length === 0) return;
+
+    var fileList = files.join(' ');
+
+    exec('cd ' + dir + ' && git add ' + fileList, function (error, stdout, stderr) {
         if (stderr) console.error(stderr);
     });
 }

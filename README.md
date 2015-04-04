@@ -1,7 +1,6 @@
 # Bemy
 [![Build Status][travis-image]][travis-url]  
-Bemy is a CLI helper for auto-generation and renaming BEM structure. Especialy usefull with webstorm (external tools). It allows to generate folder and file structure using deps.js file with one command (or hotkey). For all file types taking templates with including BEM names into placeholders. You can tune it and you can add your own file types.
-Bemy can run three usable tasks: 'create', 'rename' and 'auto';
+Bemy is a CLI helper for auto-generation and renaming BEM structure. Especialy usefull with `Webstorm` (using external tools). It allows to generate folder and file structure using deps.js ([enb](http://enb-make.info) dependencies format) file with one command (or hotkey). For all file types taking templates with including BEM names into placeholders. You can tune it and you can add your own file types. Bemy can run three usable tasks: 'create', 'rename' and 'auto';
 
 ## Install
 ```bash
@@ -22,6 +21,7 @@ Starting with version 2.1 `-t` and `-p` and `-f` is no more required. Task selec
 `-f [path]` — path to BEM node (folder or file);  
 `-g` — adding into git for created or renamed files (calls `git add` for each file);  
 `-c [config path]` — set path of your own config json file. Read about path working at `Configuring` section.
+`--debug` — to output various information.
 
 ### The task of creation  
 Takes arguments with file types and creates files using templates.
@@ -108,10 +108,13 @@ For example, default css template contain:
 Options for autotask when it called on deps file. `files` – list of file types to be created in addition to folders.  
 
 #### `editor-open-command`
-Command to be called after creating the file. There are two placeholders: 1) {{file-path}} to be replaced with relevant file path. 2) {{line-number}} will be taken from {{cursor}} position of relevant template.  Default command is `wstorm {{file-path}}:{{line-number}}`, so if you use webstorm you need to create CLI launcher at webstorm with same name (Tools / Create Command-line Lanucher). If u use old version of webstorm you can try to use `/Applications/WebStorm.app/Contents/MacOS/webide` for `editor-open-command`.  
+Command to be called after creating the file. There are two placeholders:  
+1) `{{file-path}}` to be replaced with relevant file path.  
+2) `{{line-number}}` will be taken from {{cursor}} position of relevant template.  Default command is `wstorm {{file-path}}:{{line-number}}`, so if you use webstorm you should to create CLI launcher at webstorm with same name (`Tools` / `Create Command-line Lanucher`).  
+If you use old version of webstorm on Mac you can try to use `/Applications/WebStorm.app/Contents/MacOS/webide` for `editor-open-command`.  
 
 #### `bem`
-Your BEM options. If you use own `separators` you must set right `allowed-name-symbols-regexp`.  
+Your BEM options. If you use own `separators` you have to set right `allowed-name-symbols-regexp`.  
 
 `debug` — to output various information.
 

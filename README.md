@@ -60,7 +60,7 @@ Webstorm is required `-f [path]`. An example of using bemy with `external tools`
 
 ### The autotask  
 Call default action depend on BEM node. Currently work following variants:
-1. If target is deps-file, creates described elems\mods\elemMods folder structure. And depend on options of `.bemy.json` also creates elems\mods\elemMods files. By default it's css files. Se `Configuring` section for more details.
+1. If target is deps-file, creates described elems\mods\elemMods folder structure. And depend on options of `.bemy.json` also creates elems\mods\elemMods files. By default it's css files. See `Configuring` section for more details.
 2. Otherwise call create task with default options (equal `-t create -f [path] -p "css"`). Default file types for autotask configurable at `.bemy.json`.
 
 #### CLI for autotask

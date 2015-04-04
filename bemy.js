@@ -416,7 +416,7 @@ function getConfig(ownConfig){
     if (ownConfig) {
         configPath = path.resolve(ownConfig);
     } else {
-        configPath = getConfigPath(path.dirname(trgPath)) || path.join(__dirname, 'bemy.json');
+        configPath = getConfigPath(path.dirname(trgPath)) || path.join(__dirname, '.bemy.json');
     }
 
     if (isDebug) console.log('Config path: ' + configPath);
@@ -434,7 +434,7 @@ function getConfig(ownConfig){
 function getConfigPath(dir) {
     if (dir === '/') return;
 
-    var checkPath = path.resolve(dir, 'bemy.json');
+    var checkPath = path.resolve(dir, '.bemy.json');
     if (fs.existsSync(checkPath)) {
         return checkPath;
     } else {

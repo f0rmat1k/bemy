@@ -13,7 +13,6 @@ bemy -t [task] -f [path] [options]
 
 When you call the task of creation on files it is like you call bemy on the folder contains this file. So this two variants are equal: `-f ~/testBlock/__elem c j` and `-f ~/testBlock/__elem/testBlock__elem.bh.js c j`.  
 
-
 Starting with version 2.1 `-t` and `-p` and `-f` is no more required. Task seleced depend on call bemy. See details on tasks description below.  
 
 ### Shared CLI options
@@ -109,14 +108,21 @@ Options for autotask when it called on deps file. `files` – list of file types
 
 #### `editor-open-command`
 Command to be called after creating the file. There are two placeholders:  
-1) `{{file-path}}` to be replaced with relevant file path.  
-2) `{{line-number}}` will be taken from {{cursor}} position of relevant template.  Default command is `wstorm {{file-path}}:{{line-number}}`, so if you use webstorm you should to create CLI launcher at webstorm with same name (`Tools` / `Create Command-line Lanucher`).  
+1. `{{file-path}}` to be replaced with relevant file path.  
+2. `{{line-number}}` will be taken from {{cursor}} position of relevant template.  Default command is `wstorm {{file-path}}:{{line-number}}`, so if you use webstorm you should to create CLI launcher at webstorm with same name (`Tools` / `Create Command-line Lanucher`).  
 If you use old version of webstorm on Mac you can try to use `/Applications/WebStorm.app/Contents/MacOS/webide` for `editor-open-command`.  
 
 #### `bem`
 Your BEM options. If you use own `separators` you have to set right `allowed-name-symbols-regexp`.  
 
 `debug` — to output various information.
+
+### Windows
+On Windows bemy is installed into `c:\Users\[user-name]\AppData\Roaming\npm\node_modules\bemy\bemy.js`, and webstorm cannot run bemy simply, using `bemy` command, so you have to set `node` into the field `Program`, and full absolute path to bemy into field `Parameters` before parametres. The path to bemy usually is `c:\Users\[user-name]]\AppData\Roaming\npm\node_modules\bemy\bemy.js`.  
+So settings should be something like this:  
+![2015-04-04 21-58-18 edit tool](https://cloud.githubusercontent.com/assets/769992/6993726/a5b19288-db17-11e4-898b-37d2820c18bc.png)  
+
+Also on windows isn't working CLI intarface fully, e.g. you can't run just `bemy` without `-f` param. And `-f` have to be absolute path.
 
 [travis-url]: http://travis-ci.org/f0rmat1k/bemy
 [travis-image]: http://img.shields.io/travis/f0rmat1k/bemy.svg?branch=master&style=flat

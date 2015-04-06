@@ -19,7 +19,7 @@ Starting with version 2.1 `-t` and `-p` and `-f` is no more required. Task selec
 `-t [task name]` — name of the called task. default: 'auto';  
 `-f [path]` — path to BEM node (folder or file);  
 `-g` — adding into git for created or renamed files (calls `git add` for each file);  
-`-c [config path]` — set path of your own config json file. Read about path working at `Configuring` section.
+`-c [config path]` — set path of your own config json file. Read about path working at `Configuring` section.  
 `--debug` — to output various information.
 
 ### The task of creation  

@@ -215,6 +215,8 @@ function startCreating(fileTypes){
     fileTypes.forEach(function(fileType){
         createFileFromTemplate(fileType);
     });
+
+    gitAddTrg(BEM_INFO.dirPath, gitQueue);
 }
 
 function createFileFromTemplate(fileType, trg, modVal){
@@ -346,10 +348,7 @@ function createFile(file, type, trg, modVal, cursorPos){
 
         if (isDebug) console.log('\nCreated:\n' + p);
 
-        //if (options.g) gitAddTrg(trg, [p]);
-        if (options.g) {
-            gitQueue.push(p);
-        }
+        if (options.g) gitQueue.push(p);
     }
 
     if (options.o) {
@@ -374,6 +373,10 @@ function gitAddTrg(dir, files){
 
     exec('cd ' + dir + ' && git add ' + fileList, function (error, stdout, stderr) {
         if (stderr) console.error(stderr);
+
+        if (isDebug) {
+            console.log('Added to git: \n' + files.join('\n'));
+        }
     });
 }
 

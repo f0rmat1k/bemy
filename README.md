@@ -38,7 +38,7 @@ bemy c j
 Result: called 'create' task and appear `some-block/some-block.css` and `some-block/some-block.js`.  
 
 #### Options
-`-o` — to open the file after creation. This command configured in `.bemy.json` in section `editor-open-command`. Default value is `wstorm {{file-path}}:{{line-number}}`. See more details at below in section `Configuring`;  
+`-o` — to open the file after creation. This command configured in `.bemy.json` in section `editor-open-command`. Default value is `wstorm {{file-path}}:{{line-number}}`. See more details at below in section `Configuring`. If file is existing, bemy will open it;  
 `-p [file list]` — file types list. Available following file types: `-p "css js deps priv bh"`. Also you can use short notation `p c j b d`. You can add you own file types and shortcuts into `.bemy.json`. Also you can set file types with just enumeration before single options keys, e.g. `bemy c j -o -g`.
 
 Webstorm is required `-f [path]`. An example of using bemy with `external tools` of webstorm for the task of creation:  
@@ -122,7 +122,7 @@ On Windows bemy is installed into `c:\Users\[user-name]\AppData\Roaming\npm\node
 So settings should be something like this:  
 ![2015-04-04 21-58-18 edit tool](https://cloud.githubusercontent.com/assets/769992/6993726/a5b19288-db17-11e4-898b-37d2820c18bc.png)  
 
-Also on windows isn't working CLI intarface fully, e.g. you can't run just `bemy` without `-f` param. And `-f` have to be absolute path.
+Also on windows CLI intarface isn't workingfully, e.g. you can't run just `bemy` without `-f` param. And `-f` have to be absolute path.
 
 [travis-url]: http://travis-ci.org/f0rmat1k/bemy
 [travis-image]: http://img.shields.io/travis/f0rmat1k/bemy.svg?branch=master&style=flat

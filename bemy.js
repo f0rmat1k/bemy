@@ -3,6 +3,7 @@
 'use strict';
 
 var fs = require('fs');
+var fse = require('fs-extra');
 var minimist = require('minimist');
 var path = require('path');
 var exec = require('child_process').exec;
@@ -344,7 +345,7 @@ function createFile(file, type, trg, modVal, cursorPos){
     var p = path.join(trg, info.bemName + modVal + SHORTCUTS[type].suffix);
 
     if (!fs.existsSync(p)) {
-        fs.writeFileSync(p, file);
+        fse.outputFileSync(p, file);
 
         if (isDebug) console.log('\nCreated:\n' + p);
 

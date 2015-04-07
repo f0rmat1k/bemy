@@ -8,6 +8,7 @@ var path = require('path');
 
 var blockName = 'testBlock',
     blockDir = path.join(__dirname, blockName),
+    blockParam = __dirname + '/' + blockName,
     depsTmpPath = path.join('test', 'deps-template.js');
 
 //tests
@@ -39,6 +40,13 @@ describe('Files creating', function(){
 
         done();
     });
+
+    it ('Create task: should be correct blocks files creating if the parent directory does not exist, it\'s created', function(done) {
+        createBlockFilesWithotFolder();
+        fs.existsSync(path.resolve(blockDir, blockName + '.css')).should.be.eql(true);
+        done();
+        fs.removeSync(blockDir);
+    });
 });
 
 function testCreatingTask(configPath){
@@ -49,6 +57,10 @@ function testCreatingTask(configPath){
     fs.existsSync(path.join('test', blockName, blockName + '.bh.js')).should.be.eql(true);
     fs.existsSync(path.join('test', blockName, blockName + '.priv.js')).should.be.eql(true);
     fs.existsSync(path.join('test', blockName, blockName + '.deps.js')).should.be.eql(true);
+}
+
+function createBlockFilesWithotFolder(){
+    sh.run('node bemy.js -f ' + blockParam);
 }
 
 function createBlockFiles(configPath){

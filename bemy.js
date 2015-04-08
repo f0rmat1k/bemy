@@ -225,7 +225,7 @@ function createFileFromTemplate(fileType, trg, modVal){
 
     var tmpPath;
     try { tmpPath = SHORTCUTS[fileType].template; } catch (e) {
-        tmpPath = 'tmp/empty.tmp'
+        tmpPath = 'tmp/empty.tmp';
     }
 
     if (!ownConfig) {

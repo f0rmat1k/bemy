@@ -228,9 +228,8 @@ function createFileFromTemplate(fileType, trg, modVal){
         tmpPath = 'tmp/empty.tmp'
     }
 
-    //todo resolve
     if (!ownConfig) {
-        tmpPath = path.join(__dirname, tmpPath);
+        tmpPath = path.join(path.dirname(config.configPath), tmpPath);
     }
 
     tmpPath = path.resolve(tmpPath);
@@ -435,6 +434,7 @@ function getConfig(ownConfig){
 
     try {
         var config = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
+        config.configPath = configPath;
     } catch(e) {
         console.error('Problems with config:\n' + e);
         return;
@@ -447,7 +447,7 @@ function getConfigPath(dir) {
     if (dir === root) {
         if (isWindows) {
             var homeFilePath = path.resolve(path.resolve(process.env.USERPROFILE), '.bemy.json');
-            
+
             if (fs.existsSync(homeFilePath)) {
                 return homeFilePath;
             }

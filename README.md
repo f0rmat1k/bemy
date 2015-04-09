@@ -13,7 +13,7 @@ bemy -t [task] -f [path] [options]
 
 When you call the task of creation on files it is like you call bemy on the folder contains this file. So this two variants are equal: `-f ~/testBlock/__elem c j` and `-f ~/testBlock/__elem/testBlock__elem.bh.js c j`.  
 
-Starting with version 2.1 `-t` and `-p` and `-f` is no more required. Task seleced depend on call bemy. See details on tasks description below.  
+Starting with version 2.1 `-t` and `-p` and `-f` is no more required. Task selected depend on call bemy. See details on tasks description below.  
 
 ### Shared CLI options
 `-t [task name]` — name of the called task. default: 'auto';  

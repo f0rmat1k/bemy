@@ -125,8 +125,8 @@ So settings should be something like this:
 Also on windows CLI intarface isn't working fully, e.g. you can't run just `bemy` without `-f` param. And `-f` have to be absolute path.
 
 ## Solutions with the same functionality
-* ([teatime](https://github.com/sullenor/teatime)
-* ([bem tools](https://github.com/sullenor/teatime) (`bem create`)
+* [teatime](https://github.com/sullenor/teatime)
+* [bem tools](https://github.com/bem/bem-tools) (`bem create`)
 
 
 [travis-url]: http://travis-ci.org/f0rmat1k/bemy

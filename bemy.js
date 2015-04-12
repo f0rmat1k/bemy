@@ -20,7 +20,7 @@ if (!trgPath) {
     return;
 }
 
-var isWindows = process.platform === 'win32',
+var isWindows = !!process.platform.match(/^win/),
     root = isWindows ? escapeRegExp(trgPath).slice(0, 3) : '/',
     config = getConfig(ownConfig);
 

@@ -40,6 +40,6 @@
       "mod": "_",
       "modVal": "_"
     },
-    "allowed-name-symbols-regexp": "[a-z0-9]"
+    "allowed-name-symbols-regexp": "[-a-z0-9]"
   }
 }

@@ -27,7 +27,7 @@
       "suffix": ".js",
       "shortcuts": [ "j", "js" ],
       "rename": "decl('{{bemNode}}",
-      "template": "tmp/js-template.js"
+      "template": [ "tmp/js-template.js", "node ~/projects/bemy/examples/hook.js {{filePath}}" ]
     }
   },
   "editor-open-command": "wstorm {{file-path}}:{{line-number}}",

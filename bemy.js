@@ -73,7 +73,6 @@ var bemInfo = require('./bem-info.js')(config),
 var gitQueue = [];
 
 var task = options.t || (prompt.length > 0 ? 'create' : 'auto');
-
 tasks[task]();
 
 function rename(nodePath, originNode){
@@ -223,8 +222,17 @@ function startCreating(fileTypes){
 function createFileFromTemplate(fileType, trg, modVal){
     trg = trg || trgPath;
 
-    var tmpPath;
-    try { tmpPath = SHORTCUTS[fileType].template; } catch (e) {
+    var tmpPath,
+        hook;
+
+    try {
+        tmpPath = SHORTCUTS[fileType].template;
+
+        if (Array.isArray(tmpPath)) {
+            hook = tmpPath[1];
+            tmpPath = tmpPath[0];
+        }
+    } catch (e) {
         tmpPath = 'tmp/empty.tmp';
     }
 
@@ -238,7 +246,7 @@ function createFileFromTemplate(fileType, trg, modVal){
     var cursorPos = getCursorPosition(file);
     file = file.replace('{{cursor}}', '');
 
-    createFile(file, fileType, trg, modVal, cursorPos);
+    createFile(file, fileType, trg, modVal, cursorPos, hook);
 }
 
 function insertName(file, trg, modVal){
@@ -332,7 +340,7 @@ function getNormalaizedDeps(data) {
     return normalizedMustDeps.concat(normalizedShouldDeps);
 }
 
-function createFile(file, type, trg, modVal, cursorPos){
+function createFile(file, type, trg, modVal, cursorPos, hook){
     trg = trg || trgPath;
 
     modVal = modVal || '';
@@ -346,9 +354,27 @@ function createFile(file, type, trg, modVal, cursorPos){
     if (!fs.existsSync(p)) {
         fse.outputFileSync(p, file);
 
-        if (isDebug) console.log('\nCreated:\n' + p);
+        if (hook) {
+            hook = hook.replace('{{filePath}}', p);
+
+            exec(hook, function (error, stdout, stderr) {
+                if (stderr) {
+                    console.error("Created. But hook didn't work, because:");
+                    console.error(stderr);
+                }
+
+                if (stdout) {
+                    console.log('Hook output:');
+                    console.log(stdout);
+                }
+            });
+        }
 
         if (options.g) gitQueue.push(p);
+
+        if (isDebug) console.log('\nCreated:\n' + p);
+    } else {
+        console.log('\nAlready exists:\n' + p);
     }
 
     if (options.o) {

@@ -6,3 +6,4 @@ atlassian-ide-plugin.xml
 
 .DS_Store
 .npmrc
+npm-debug.log

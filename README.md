@@ -88,7 +88,7 @@ Description of the used file types.
 `shortcuts` — list of short that you can use after `-p` key in Task of creation;  
 `rename` – mask for deep renaming. {{bemNode}} will be replaced to new node name. You can also use an array of masks;  
 `template` — path to template of file type. Teamplate used when any files are created.  
-There are following placeholders: `{{blockName}}`, `{{elemName}}`, `{{modName}}`, `{{modVal}}` and `{{cursor}}`. When files are created this entries will be replaced with relevant part of BEM node name.  And `{{cursor}}` will be deleted and used for setting cursor line number (see more at `Configuring` section). Also you can set hook, which will be called, when file will be created. Hook-command get file path with the first argument by replacing `{{filePath}}`.  
+There are following placeholders: `{{blockName}}`, `{{elemName}}`, `{{modName}}`, `{{modVal}}` and `{{cursor}}`. When files are created this entries will be replaced with relevant part of BEM node name.  And `{{cursor}}` will be deleted and used for setting cursor line number (see more at `Configuring` section). Also you can set a hook, which will be called, when file will be created. The hook-command get file path with the first argument by replacing `{{filePath}}`.  
 
 For example, default css template contain:
 ```

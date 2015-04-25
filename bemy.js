@@ -233,7 +233,7 @@ function createFileFromTemplate(fileType, trg, modVal){
             tmpPath = tmpPath[0];
         }
     } catch (e) {
-        tmpPath = 'tmp/empty.tmp';
+        tmpPath = 'stub/empty.tmp';
     }
 
     if (!ownConfig) {

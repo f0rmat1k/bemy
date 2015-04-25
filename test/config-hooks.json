@@ -4,7 +4,7 @@
       "suffix": ".js",
       "shortcuts": [ "j", "js" ],
       "rename": "decl('{{bemNode}}",
-      "template": [ "tmp/js-template.js", "node examples/hook.js {{filePath}}" ]
+      "template": [ "stub/script/_bl/script_bl.js", "node examples/hook.js {{filePath}}" ]
     }
   },
   "deps_task": {

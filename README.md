@@ -35,7 +35,7 @@ Result: In the folder `~/testBlock/__elem` was added two files: `testBlock__elem
 cd some-block  
 bemy c j
 ```
-Result: called 'create' task and appear `some-block/some-block.css` and `some-block/some-block.js`.  
+Result: called 'create' task and appeared `some-block/some-block.css` and `some-block/some-block.js`.  
 
 #### Options
 `-o` — to open the file after creation. If file is existing, bemy will open it. This command configured in `.bemy.json` in section `editor-open-command`. Default value is `wstorm {{file-path}}:{{line-number}}`. See more details at below in section `Configuring`;  
@@ -46,7 +46,7 @@ Webstorm is required `-f [path]`. An example of using bemy with `external tools`
 Don't forget to configure hotkey for task running (e.g. `ctrl + c`) at `keymap` section.
 
 ### The task of renaming  
-Recursively renames current node and its children. `-d` turn on deep mode and the contents of the files will also be renamed. Deep rename used `rename` param from config file so you should to configure it for you own file types. `rename` renames only described files and valid directories (e.g. mod folder in mod folder isn't valid).
+Recursively renames current node and its children. `-d` turn on deep mode and contents of files will also be renamed. Deep rename used `rename` param from config file so you should to configure it for you own file types. `rename` renames only described files and valid directories (e.g. mod folder in mod folder isn't valid).
 
 #### CLI for task of renaming:
 `bemy -t rename -f [path] -p [new name] -d`
@@ -59,8 +59,8 @@ Webstorm is required `-f [path]`. An example of using bemy with `external tools`
 ![](https://cloud.githubusercontent.com/assets/769992/6766361/e3006d96-d025-11e4-948e-1f11a663f2ea.png)  
 
 ### The autotask  
-Call default action depend on BEM node. Currently work following variants:
-1. If target is deps-file, creates described elems\mods\elemMods folder structure. And depend on options of `.bemy.json` also creates elems\mods\elemMods files. By default it's css files. See `Configuring` section for more details.
+Calls default action depend on BEM node. Currently work following variants:  
+1. If target is a deps-file, creates described elems\mods\elemMods folder structure. And depend on options of `.bemy.json` also creates elems\mods\elemMods files. By default it's css files. See `Configuring` section for more details.  
 2. Otherwise call create task with default options (equal `-t create -f [path] -p "css"`). Default file types for autotask configurable at `.bemy.json`.
 
 #### CLI for autotask
@@ -73,14 +73,14 @@ cd some-block
 bemy
 ```
 Called autotask and created the only css file `some-block.css`.  
-You should set `-f` when you want set not current directory or call bemy on `deps.js` file.  
+You should set `-f` when you want set different from the current directory or call bemy on `deps.js` file.  
 
 Webstorm is required `-f [path]`. An example of using bemy with `external tools` of webstorm for the autotask:  
 ![](https://cloud.githubusercontent.com/assets/769992/6725778/23a5188a-ce30-11e4-828d-0d590fb26e08.png)  
 Don't forget to configure hotkey for task running (e.g. `ctrl + a`) at `keymap` section.
 
 ### Confguring
-Bemy will try to find `.bemy.json` on the every previous level (like npm) until the root directory, so you can put `.bemy.json` into your home directory or project directory if you need different options depend on project. Otherwise bemy wil take `.bemy.json` from own directory.  
+Bemy will try to find `.bemy.json` on the every previous level (like npm) until the root directory, so you can put `.bemy.json` into your home directory or project directory if you need different options depend on project. Otherwise bemy will take `.bemy.json` from own directory.  
 
 #### `file-types`
 Description of the used file types.  
@@ -88,7 +88,7 @@ Description of the used file types.
 `shortcuts` — list of short that you can use after `-p` key in Task of creation;  
 `rename` – mask for deep renaming. {{bemNode}} will be replaced to new node name. You can also use an array of masks;  
 `template` — path to template of file type. Teamplate used when any files are created.  
-There are following placeholders: `{{blockName}}`, `{{elemName}}`, `{{modName}}`, `{{modVal}}` and `{{cursor}}`. When files are created this entries will be replaced with relevant part of BEM node name.  And `{{cursor}}` will be deleted and used for setting cursor line number (see more at `Configuring` section). Also you can set a hook, which will be called, when file will be created. The hook-command get file path with the first argument by replacing `{{filePath}}`.  
+There are following placeholders: `{{blockName}}`, `{{elemName}}`, `{{modName}}`, `{{modVal}}` and `{{cursor}}`. When files are created this entries will be replaced with relevant part of BEM node name.  And `{{cursor}}` will be deleted and used for setting cursor line number (see more at `Configuring` section). Also, you can set a hook, which will be called, when file will be created. The hook-command get file path with the first argument by replacing `{{filePath}}`.  
 
 For example, default css template contain:
 ```

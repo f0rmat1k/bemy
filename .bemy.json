@@ -4,30 +4,53 @@
       "suffix": ".css",
       "shortcuts": [ "c", "css" ],
       "rename": ".{{bemNode}}",
-      "template": "tmp/css-template.css"
+      "template": "stub/style/style.css"
+    },
+    "styl": {
+      "suffix": ".styl",
+      "shortcuts": [ "s", "styl" ],
+      "rename": ".{{bemNode}}",
+      "template": "stub/style/style.styl"
     },
     "deps": {
       "suffix": ".deps.js",
       "shortcuts": [ "d", "deps" ],
-      "template": "tmp/deps-template.js"
+      "template": "stub/depend/depend.deps.js"
+    },
+    "deps_dom": {
+      "suffix": ".deps.js",
+      "shortcuts": [ "ddom", "deps_dom" ],
+      "template": "stub/depend/_dom/depend_dom.deps.js"
     },
     "bh": {
       "suffix": ".bh.js",
       "shortcuts": [ "b", "bh" ],
       "rename": "match('{{bemNode}}",
-      "template": "tmp/bh-template.js"
+      "template": "stub/template/template.bh.js"
     },
     "priv": {
       "suffix": ".priv.js",
       "shortcuts": [ "p", "priv" ],
       "rename": [ "declare('{{bemNode}}", "block: '{{bemNode}}'", "block:'{{bemNode}}'" ],
-      "template": "tmp/priv-template.js"
+      "template": "stub/template/template.priv.js"
+    },
+    "js_bl": {
+      "suffix": ".js",
+      "shortcuts": [ "jbl", "js_bl" ],
+      "rename": "decl('{{bemNode}}",
+      "template": [ "stub/script/_bl/script_bl.js" ]
     },
     "js": {
       "suffix": ".js",
       "shortcuts": [ "j", "js" ],
       "rename": "decl('{{bemNode}}",
-      "template": [ "tmp/js-template.js", "node ~/projects/bemy/examples/hook.js {{filePath}}" ]
+      "template": [ "stub/script/script.js" ]
+    },
+    "js_dom": {
+      "suffix": ".js",
+      "shortcuts": [ "jdom", "js_dom" ],
+      "rename": "decl('{{bemNode}}",
+      "template": [ "stub/script/_dom/script_dom.js" ]
     }
   },
   "editor-open-command": "wstorm {{file-path}}:{{line-number}}",

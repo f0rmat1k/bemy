@@ -4,30 +4,30 @@
       "suffix": ".css",
       "shortcuts": [ "c", "css" ],
       "rename": ".{{bemNode}}",
-      "template": "tmp/css-template.css"
+      "template": "stub/style/style.css"
     },
     "deps": {
       "suffix": ".deps.js",
       "shortcuts": [ "d", "deps" ],
-      "template": "test/deps-template.js"
+      "template": "stub/depend/depend.deps.js"
     },
     "bh": {
       "suffix": ".bh.js",
       "shortcuts": [ "b", "bh" ],
       "rename": "match('{{bemNode}}",
-      "template": "tmp/bh-template.js"
+      "template": "stub/template/template.bh.js"
     },
     "priv": {
       "suffix": ".priv.js",
       "shortcuts": [ "p", "priv" ],
       "rename": [ "declare('{{bemNode}}", "block: '{{bemNode}}'", "block:'{{bemNode}}'" ],
-      "template": "tmp/priv-template.js"
+      "template": "stub/template/template.priv.js"
     },
     "js": {
       "suffix": ".js",
       "shortcuts": [ "j", "js" ],
       "rename": "decl('{{bemNode}}",
-      "template": "tmp/js-template.js"
+      "template": "stub/script/_bl/script_bl.js"
     }
   },
   "deps_task": {

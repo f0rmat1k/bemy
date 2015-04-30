@@ -9,7 +9,7 @@
     "deps": {
       "suffix": ".deps.js",
       "shortcuts": [ "d", "deps" ],
-      "template": "stub/depend/depend.deps.js"
+      "template": "test/deps-template.js"
     },
     "bh": {
       "suffix": ".bh.js",

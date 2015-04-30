@@ -19,7 +19,7 @@
     },
     "deps_dom": {
       "suffix": ".deps.js",
-      "shortcuts": [ "ddom", "deps_dom" ],
+      "shortcuts": [ "dd", "ddom", "deps_dom" ],
       "template": "stub/depend/_dom/depend_dom.deps.js"
     },
     "bh": {
@@ -43,13 +43,13 @@
     "js": {
       "suffix": ".js",
       "shortcuts": [ "j", "js" ],
-      "rename": "decl('{{bemNode}}",
+      "rename": [ "modules.define('{{bemNode}}", "@module {{bemNode}}", "@exports {{bemNode}}" ],
       "template": [ "stub/script/script.js" ]
     },
     "js_dom": {
       "suffix": ".js",
       "shortcuts": [ "jdom", "js_dom" ],
-      "rename": "decl('{{bemNode}}",
+      "rename": [ "@module {{bemNode}}", "@class {{bemNode}}", "@lends {{bemNode}}", "@exports {{bemNode}}" ],
       "template": [ "stub/script/_dom/script_dom.js" ]
     }
   },

@@ -43,9 +43,7 @@ Command: `bemy -t create -f ~/testBlock/__elem -p "css js"`
 
 **Result**:
 ```
-testBlock  
-├── testBlock.js  
-├── testBlock.css  
+testBlock   
 └── __elem  
     ├── testBlock__elem.js  
     └── testBlock__elem.css  

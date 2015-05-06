@@ -1,6 +1,17 @@
 # Bemy
 [![Build Status][travis-image]][travis-url]  
-Bemy is a CLI helper for auto-generation and renaming BEM structure. Especialy usefull with `Webstorm` (using external tools). It allows to generate folder and file structure using deps.js ([enb](http://enb-make.info) dependencies format) file with one command (or hotkey). For all file types taking templates with including BEM names into placeholders. You can tune it and you can add your own file types. Bemy can run three usable tasks: **create**, **rename**, and **auto**;
+Bemy is a CLI helper for auto-generation and renaming BEM structure, like this:
+
+```
+myblock  
+├── myblock.js  
+├── myblock.css  
+└── __elem  
+    ├── myblock__elem.js  
+    └── myblock__elem.css  
+```
+
+Especialy usefull with `Webstorm` (using external tools). It allows to generate folder and file structure using deps.js ([enb](http://enb-make.info) dependencies format) file with one command (or hotkey). For all file types taking templates with including BEM names into placeholders. You can tune it and you can add your own file types. Bemy can run three usable tasks: **create**, **rename**, and **auto**;
 
 ## Install
 ```bash
@@ -29,7 +40,15 @@ Takes arguments with file types and creates files using templates.
 `bemy -t create -f [path] -p "[file types]"`, where `file path` — is a path to BEM node (folder or file), `file types` — list of needed files separated by space.  
 Example:  
 Command: `bemy -t create -f ~/testBlock/__elem -p "css js"`  
-Result: In the folder `~/testBlock/__elem` was added two files: `testBlock__elem.js` and `testBlock__elem.css`.  
+Result:
+```
+testBlock  
+├── testBlock.js  
+├── testBlock.css  
+└── __elem  
+    ├── testBlock__elem.js  
+    └── testBlock__elem.css  
+```
 
 ```bash
 cd some-block  
@@ -72,6 +91,13 @@ Run autotask:
 cd some-block  
 bemy
 ```
+
+Result:
+```
+some-block  
+└── some-block.css  
+```
+
 Called autotask and created the only css file `some-block.css`.  
 You should set `-f` when you want set different from the current directory or call bemy on `deps.js` file.  
 

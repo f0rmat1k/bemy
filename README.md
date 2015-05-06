@@ -38,9 +38,10 @@ Takes arguments with file types and creates files using templates.
 
 #### CLI for task of creation:  
 `bemy -t create -f [path] -p "[file types]"`, where `file path` — is a path to BEM node (folder or file), `file types` — list of needed files separated by space.  
-Example:  
+**Example**:  
 Command: `bemy -t create -f ~/testBlock/__elem -p "css js"`  
-Result:
+
+**Result**:
 ```
 testBlock  
 ├── testBlock.js  
@@ -50,10 +51,6 @@ testBlock
     └── testBlock__elem.css  
 ```
 
-```bash
-cd some-block  
-bemy c j
-```
 Result: called 'create' task and appeared `some-block/some-block.css` and `some-block/some-block.js`.  
 
 #### Options

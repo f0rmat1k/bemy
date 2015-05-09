@@ -11,15 +11,16 @@
     "type": "git",
     "url": "https://github.com/f0rmat1k/bemy.git"
   },
-  "version": "3.4.0",
+  "version": "3.5.0",
   "keywords": [
     "bem",
     "BEM Tools"
   ],
   "dependencies": {
     "deps-normalize": "^2.3.1",
+    "fs-extra": "^0.16.5",
     "minimist": "^1.1.0",
-    "fs-extra": "^0.16.5"
+    "update-notifier": "^0.5.0"
   },
   "devDependencies": {
     "mocha": "^2.1.0",

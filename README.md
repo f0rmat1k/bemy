@@ -136,7 +136,8 @@ If you use old version of webstorm on Mac you can try to use `/Applications/WebS
 #### `bem`
 Your BEM options. If you use own `separators` you have to set right `allowed-name-symbols-regexp`.  
 
-`debug` — to output various information.
+`debug` — to output various information.  
+`checkForUpdate` — check for new version.
 
 ### Windows
 On Windows bemy is installed into `c:\Users\[user-name]\AppData\Roaming\npm\node_modules\bemy\bemy.js`, and webstorm cannot run bemy simply, using `bemy` command, so you have to set `node` into the field `Program`, and full absolute path to bemy into field `Parameters` before parametres. The path to bemy usually is `c:\Users\[user-name]]\AppData\Roaming\npm\node_modules\bemy\bemy.js`.  

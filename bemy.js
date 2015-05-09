@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-
 'use strict';
 
 var fs = require('fs');
@@ -25,6 +24,13 @@ var isWindows = !!process.platform.match(/^win/),
     config = getConfig(ownConfig);
 
 if (!config) return;
+
+if (config.checkForUpdate === true) {
+    var updateNotifier = require('update-notifier');
+    var pkg = require('./package.json');
+
+    updateNotifier({ pkg: pkg }).notify();
+}
 
 if (config.debug) isDebug = true;
 

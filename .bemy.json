@@ -65,5 +65,6 @@
   "deps_task": {
     "files": [ "css" ]
   },
-  "debug": false
+  "debug": false,
+  "checkForUpdate": true
 }

@@ -233,7 +233,7 @@ function createFileFromTemplate(fileType, trg, modVal){
 
     try {
         tmpPath = SHORTCUTS[fileType].template;
-
+        console.log(tmpPath);
         if (Array.isArray(tmpPath)) {
             hook = tmpPath[1];
             tmpPath = tmpPath[0];
@@ -266,6 +266,8 @@ function insertName(file, trg, modVal){
 }
 
 function createStructureByDeps(){
+    if (!fs.existsSync(trgPath)) throw new Error('.deps file not found in: ' + trgPath);
+
     var file = fs.readFileSync(trgPath, 'utf-8'),
         depsObj = depsToObj(file),
         structureList = getNormalaizedDeps(depsObj);
@@ -395,6 +397,8 @@ function createFile(file, type, trg, modVal, cursorPos, hook){
 }
 
 function getTemplate(tmpPath){
+    if (!fs.existsSync(tmpPath)) throw new Error('Template not found in: ' + tmpPath);
+
     return fs.readFileSync(tmpPath, 'utf-8');
 }
 
@@ -468,8 +472,7 @@ function getConfig(ownConfig){
         var config = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
         config.configPath = configPath;
     } catch(e) {
-        console.error('Problems with config:\n' + e);
-        return;
+        throw new Error('Problems with config:\n' + e);
     }
 
     return config;

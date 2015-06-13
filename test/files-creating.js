@@ -2,7 +2,7 @@
 
 require('should');
 
-var sh = require('execSync');
+var execSync = require('child_process').execSync;
 var fs = require('fs-extra');
 var path = require('path');
 
@@ -60,17 +60,17 @@ function testCreatingTask(configPath){
 }
 
 function createBlockFilesWithotFolder(){
-    sh.run('node bemy.js -f ' + blockParam);
+    execSync('node bemy.js -f ' + blockParam);
 }
 
 function createBlockFiles(configPath){
-    sh.run('node bemy.js -t create -p "c d j b p" -c ' + configPath + ' -f ' + blockDir);
+    execSync('node bemy.js -t create -p "c d j b p" -c ' + configPath + ' -f ' + blockDir);
     fs.existsSync(path.resolve(blockDir, blockName + '.css')).should.be.eql(true);
 }
 
 function runDepsAutoTask(configPath){
     var blockDepsFilePath = path.resolve(blockDir, blockName + '.deps.js');
-    sh.run('node bemy.js -c ' + configPath + ' -f ' + blockDepsFilePath);
+    execSync('node bemy.js -c ' + configPath + ' -f ' + blockDepsFilePath);
 }
 
 function testDepsCreationFiles(deps, configPath){

@@ -11,22 +11,20 @@
     "type": "git",
     "url": "https://github.com/f0rmat1k/bemy.git"
   },
-  "version": "3.5.0",
+  "version": "3.5.1",
   "keywords": [
     "bem",
     "BEM Tools"
   ],
   "dependencies": {
     "deps-normalize": "^2.3.1",
-    "fs-extra": "^0.16.5",
-    "minimist": "^1.1.0",
+    "fs-extra": "^0.19.0",
+    "minimist": "^1.1.1",
     "update-notifier": "^0.5.0"
   },
   "devDependencies": {
-    "mocha": "^2.1.0",
-    "should": "^5.0.1",
-    "fs-extra": "^0.16.5",
-    "execSync": "^1.0.2"
+    "mocha": "^2.2.5",
+    "should": "^6.0.3"
   },
   "bin": "./bemy.js",
   "bugs": {

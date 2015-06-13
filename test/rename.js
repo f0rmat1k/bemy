@@ -2,8 +2,7 @@
 
 require('should');
 
-var sh = require('execSync');
-var exec = sh.run;
+var execSync = require('child_process').execSync;
 var fs = require('fs-extra');
 
 describe('Renaming', function(){
@@ -15,7 +14,7 @@ describe('Renaming', function(){
         });
 
         it('Renaming mod of block', function(){
-            exec('node bemy.js -t rename -f test/rename/_mod -p "foo"');
+            execSync('node bemy.js -t rename -f test/rename/_mod -p "foo"');
 
             fs.existsSync('test/rename/_foo/').should.be.eql(true);
             fs.existsSync('test/rename/_foo/rename_foo.css').should.be.eql(true);
@@ -23,7 +22,7 @@ describe('Renaming', function(){
         });
 
         it('Renaming mods of block when called by mod file', function(){
-            exec('node bemy.js -t rename -f test/rename/_foo/rename_foo_val.js -p "bar"');
+            execSync('node bemy.js -t rename -f test/rename/_foo/rename_foo_val.js -p "bar"');
 
             fs.existsSync('test/rename/_bar/').should.be.eql(true);
             fs.existsSync('test/rename/_bar/rename_bar.css').should.be.eql(true);
@@ -31,7 +30,7 @@ describe('Renaming', function(){
         });
 
         it('Renaming elem', function(){
-            exec('node bemy.js -t rename -f test/rename/__elem -p "text"');
+            execSync('node bemy.js -t rename -f test/rename/__elem -p "text"');
 
             fs.existsSync('test/rename/__text/').should.be.eql(true);
             fs.existsSync('test/rename/__text/rename__text.css').should.be.eql(true);
@@ -42,7 +41,7 @@ describe('Renaming', function(){
         });
 
         it('Renaming elem when called by elem file', function(){
-            exec('node bemy.js -t rename -f test/rename/__text/rename__text.deps.js -p "kontur"');
+            execSync('node bemy.js -t rename -f test/rename/__text/rename__text.deps.js -p "kontur"');
 
             fs.existsSync('test/rename/__kontur/').should.be.eql(true);
             fs.existsSync('test/rename/__kontur/rename__kontur.css').should.be.eql(true);
@@ -53,7 +52,7 @@ describe('Renaming', function(){
         });
 
         it('Renaming mod of elem', function(){
-            exec('node bemy.js -t rename -f test/rename/__kontur/_mod/ -p "foo"');
+            execSync('node bemy.js -t rename -f test/rename/__kontur/_mod/ -p "foo"');
 
             fs.existsSync('test/rename/__kontur/_foo').should.be.eql(true);
             fs.existsSync('test/rename/__kontur/_foo/rename__kontur_foo.css').should.be.eql(true);
@@ -61,7 +60,7 @@ describe('Renaming', function(){
         });
 
         it('Renaming mod of elem when called by mod file', function(){
-            exec('node bemy.js -t rename -f test/rename/__kontur/_foo/rename__kontur_foo_val.js -p "bar"');
+            execSync('node bemy.js -t rename -f test/rename/__kontur/_foo/rename__kontur_foo_val.js -p "bar"');
 
             fs.existsSync('test/rename/__kontur/_bar').should.be.eql(true);
             fs.existsSync('test/rename/__kontur/_bar/rename__kontur_bar.css').should.be.eql(true);
@@ -69,7 +68,7 @@ describe('Renaming', function(){
         });
 
         it('Block renaming', function(){
-            exec('node bemy.js -t rename -f test/rename -p "megablock"');
+            execSync('node bemy.js -t rename -f test/rename -p "megablock"');
 
             fs.existsSync('test/megablock').should.be.eql(true);
             fs.existsSync('test/megablock/megablock.css').should.be.eql(true);
@@ -86,7 +85,7 @@ describe('Renaming', function(){
         });
 
         it('Block renaming when called by mod', function(){
-            exec('node bemy.js -t rename -f test/megablock/megablock.priv.js -p "slider"');
+            execSync('node bemy.js -t rename -f test/megablock/megablock.priv.js -p "slider"');
 
             fs.existsSync('test/slider').should.be.eql(true);
             fs.existsSync('test/slider/slider.css').should.be.eql(true);
@@ -117,25 +116,25 @@ describe('Renaming', function(){
         });
 
         it('Correct renaming of mod of block', function(){
-            exec('node bemy.js -t rename -f test/rename/_mod -p "foo" -d');
+            execSync('node bemy.js -t rename -f test/rename/_mod -p "foo" -d');
             fs.readFileSync('test/rename/_foo/rename_foo.css', 'utf-8').indexOf('.rename_foo').should.not.eql(-1);
             fs.readFileSync('test/rename/_foo/rename_foo_val.js', 'utf-8').indexOf('rename_foo_val').should.not.eql(-1);
         });
 
         it('Correct renaming of elem', function(){
-            exec('node bemy.js -t rename -f test/rename/__elem -p "some" -d');
+            execSync('node bemy.js -t rename -f test/rename/__elem -p "some" -d');
             fs.readFileSync('test/rename/__some/rename__some.css', 'utf-8').indexOf('.rename__some').should.not.eql(-1);
             fs.readFileSync('test/rename/__some/rename__some.deps.js', 'utf-8').indexOf('rename__some').should.be.eql(-1);
         });
 
         it('Correct renaming of mod of elem', function(){
-            exec('node bemy.js -t rename -f test/rename/__some/_mod -p "foo" -d');
+            execSync('node bemy.js -t rename -f test/rename/__some/_mod -p "foo" -d');
             fs.readFileSync('test/rename/__some/_foo/rename__some_foo.css', 'utf-8').indexOf('.rename__some_foo').should.not.eql(-1);
             fs.readFileSync('test/rename/__some/_foo/rename__some_foo_val.js', 'utf-8').indexOf('rename__some_foo_val').should.not.eql(-1);
         });
 
         it('Correct renaming of block', function(){
-            exec('node bemy.js -t rename -f test/rename -p "megablock" -d');
+            execSync('node bemy.js -t rename -f test/rename -p "megablock" -d');
 
             fs.readFileSync('test/megablock/megablock.css', 'utf-8').indexOf('.megablock').should.not.eql(-1);
             fs.readFileSync('test/megablock/megablock.priv.js', 'utf-8').indexOf('megablock').should.not.eql(-1);

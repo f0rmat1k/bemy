@@ -72,8 +72,6 @@ var bemInfo = require('./bem-info.js')(config),
         create: startCreating.bind(this, prompt),
         rename: function(){
             rename(trgPath);
-            console.log(gitQueue);
-            console.log(BEM_INFO.dirPath);
             gitAdd(gitQueue);
         }
     };

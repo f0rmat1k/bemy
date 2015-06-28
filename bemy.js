@@ -72,7 +72,9 @@ var bemInfo = require('./bem-info.js')(config),
         create: startCreating.bind(this, prompt),
         rename: function(){
             rename(trgPath);
-            gitAddTrg(BEM_INFO.dirPath, gitQueue);
+            console.log(gitQueue);
+            console.log(BEM_INFO.dirPath);
+            gitAdd(gitQueue);
         }
     };
 
@@ -222,7 +224,7 @@ function startCreating(fileTypes){
         createFileFromTemplate(fileType);
     });
 
-    gitAddTrg(BEM_INFO.dirPath, gitQueue);
+    gitAdd(gitQueue);
 }
 
 function createFileFromTemplate(fileType, trg, modVal){
@@ -233,7 +235,7 @@ function createFileFromTemplate(fileType, trg, modVal){
 
     try {
         tmpPath = SHORTCUTS[fileType].template;
-        console.log(tmpPath);
+
         if (Array.isArray(tmpPath)) {
             hook = tmpPath[1];
             tmpPath = tmpPath[0];
@@ -274,7 +276,7 @@ function createStructureByDeps(){
 
     structureList.forEach(createNode);
 
-    gitAddTrg(BEM_INFO.dirPath, gitQueue);
+    gitAdd(gitQueue);
 }
 
 function createNode(nodeObj){
@@ -402,10 +404,12 @@ function getTemplate(tmpPath){
     return fs.readFileSync(tmpPath, 'utf-8');
 }
 
-function gitAddTrg(dir, files){
+function gitAdd(files){
     if (files.length === 0) return;
 
     var fileList = files.join(' ');
+
+    var dir = path.dirname(files[0]);
 
     exec('cd ' + dir + ' && git add ' + fileList, function (error, stdout, stderr) {
         if (stderr) console.error(stderr);

@@ -17,13 +17,13 @@
     "BEM Tools"
   ],
   "dependencies": {
-    "deps-normalize": "^2.3.1",
-    "fs-extra": "^0.19.0",
-    "minimist": "^1.1.1",
+    "deps-normalize": "^2.4.1",
+    "fs-extra": "^0.26.2",
+    "minimist": "^1.2.0",
     "update-notifier": "^0.5.0"
   },
   "devDependencies": {
-    "mocha": "^2.2.5",
+    "mocha": "^2.3.4",
     "should": "^6.0.3"
   },
   "bin": "./bemy.js",

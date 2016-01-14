@@ -11,7 +11,7 @@ myblock
     └── myblock__elem.css  
 ```
 
-Especialy usefull with `Webstorm` (using external tools). It allows to generate folder and file structure using deps.js ([enb](http://enb-make.info) dependencies format) file with one command (or hotkey). All templates supports different placeholders that will be replaced with BEM node names. You can tune it and you can add your own file types. Bemy can run three usable tasks: **create**, **rename**, and **auto**;
+Especialy usefull with `Webstorm` (using external tools). It allows to generate folder and file structure using deps.js ([enb](http://enb-make.info) dependencies format) file with one command (or hotkey). All templates supports different placeholders that will be replaced with BEM node names. You can tune it and can add your own file types. Bemy can run three usable tasks: **create**, **rename**, and **auto**;
 
 ## Install
 ```bash
@@ -24,12 +24,12 @@ bemy -t [task] -f [path] [options]
 
 When you call the task of creation on files it is like you call bemy on the folder contains this file. So this two variants are equal: `-f ~/testBlock/__elem c j` and `-f ~/testBlock/__elem/testBlock__elem.bh.js c j`.  
 
-Starting with version 2.1 `-t` and `-p` and `-f` is no more required. Task selected depend on call bemy. See details on tasks description below.  
+Starting with version 2.1 `-t` and `-p` and `-f` is no more required.  
 
 ### Shared CLI options
 `-t [task name]` — name of the called task. default: 'auto';  
 `-f [path]` — path to BEM node (folder or file);  
-`-g` — adding into git for created or renamed files (calls `git add` for each file);  
+`-g` — adding into git for created or renamed files (it calls `git add` for each file);  
 `-c [config path]` — set path of your own config json file. Read about path working at `Configuring` section.  
 `--debug` — to output various information.
 
@@ -52,7 +52,7 @@ testBlock
 Result: called 'create' task and appeared `some-block/some-block.css` and `some-block/some-block.js`.  
 
 #### Options
-`-o` — to open the file after creation. If file is existing, bemy will open it. This command configured in `.bemy.json` in section `editor-open-command`. Default value is `wstorm {{file-path}}:{{line-number}}`. See more details at below in section `Configuring`;  
+`-o` — opens the file after creation. If file exists, bemy just open it. This command is configured in `.bemy.json` in section `editor-open-command`. Default value is `wstorm {{file-path}}:{{line-number}}`. See more details at below in the section `Configuring`;  
 `-p [file list]` — file types list. Available following file types: `-p "css js deps priv bh"`. Also you can use short notation `p c j b d`. You can add you own file types and shortcuts into `.bemy.json`. Also you can set file types with just enumeration before single options keys, e.g. `bemy c j -o -g`.
 
 Webstorm requires `-f [path]`. An example of using bemy with `external tools` of webstorm for the task of creation:  
@@ -60,7 +60,7 @@ Webstorm requires `-f [path]`. An example of using bemy with `external tools` of
 Don't forget to configure hotkey for task running (e.g. `ctrl + c`) at `keymap` section.
 
 ### The task of renaming  
-Recursively renames current node and its children. `-d` turn on deep mode and contents of files will also be renamed. Deep rename used `rename` param from config file so you should to configure it for you own file types. `rename` renames only described files and valid directories (e.g. mod folder in mod folder isn't valid).
+Recursively renames current node and its children. `-d` turn on deep mode, and contents of files will also be renamed. Deep rename used `rename` param from config file so you should to configure it for you own file types. `rename` renames only described files and valid directories (e.g. mod folder in mod folder isn't valid).
 
 #### CLI for task of renaming:
 `bemy -t rename -f [path] -p [new name] -d`

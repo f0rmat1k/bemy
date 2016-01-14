@@ -11,7 +11,7 @@ myblock
     └── myblock__elem.css  
 ```
 
-Especialy usefull with `Webstorm` (using external tools). It allows to generate folder and file structure using deps.js ([enb](http://enb-make.info) dependencies format) file with one command (or hotkey). For all file types templates a taked with including BEM names into placeholders. You can tune it and you can add your own file types. Bemy can run three usable tasks: **create**, **rename**, and **auto**;
+Especialy usefull with `Webstorm` (using external tools). It allows to generate folder and file structure using deps.js ([enb](http://enb-make.info) dependencies format) file with one command (or hotkey). All templates supports different placeholders that will be replaced with BEM node names. You can tune it and you can add your own file types. Bemy can run three usable tasks: **create**, **rename**, and **auto**;
 
 ## Install
 ```bash

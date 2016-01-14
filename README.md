@@ -55,7 +55,7 @@ Result: called 'create' task and appeared `some-block/some-block.css` and `some-
 `-o` — to open the file after creation. If file is existing, bemy will open it. This command configured in `.bemy.json` in section `editor-open-command`. Default value is `wstorm {{file-path}}:{{line-number}}`. See more details at below in section `Configuring`;  
 `-p [file list]` — file types list. Available following file types: `-p "css js deps priv bh"`. Also you can use short notation `p c j b d`. You can add you own file types and shortcuts into `.bemy.json`. Also you can set file types with just enumeration before single options keys, e.g. `bemy c j -o -g`.
 
-Webstorm is required `-f [path]`. An example of using bemy with `external tools` of webstorm for the task of creation:  
+Webstorm requires `-f [path]`. An example of using bemy with `external tools` of webstorm for the task of creation:  
 ![](https://cloud.githubusercontent.com/assets/769992/6725632/0232f4ee-ce2e-11e4-942e-7845381663ed.png)  
 Don't forget to configure hotkey for task running (e.g. `ctrl + c`) at `keymap` section.
 

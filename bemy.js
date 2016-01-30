@@ -366,9 +366,6 @@ function createFile(file, type, trg, modVal, cursorPos, hook){
             hook = hook.replace('{{filePath}}', p);
 
             try {
-                console.log(hook);
-                console.log(fs.readdirSync('.'));
-
                 var hookStdout = execSync(hook).toString('utf-8');
 
                 if (hookStdout) {

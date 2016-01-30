@@ -5,7 +5,7 @@ var fs = require('fs');
 var fse = require('fs-extra');
 var minimist = require('minimist');
 var path = require('path');
-var exec = require('child_process').exec;
+var execSync = require('child_process').execSync;
 var depsNormalize = require('deps-normalize');
 
 var options = minimist(process.argv.slice(2)),
@@ -365,17 +365,20 @@ function createFile(file, type, trg, modVal, cursorPos, hook){
         if (hook) {
             hook = hook.replace('{{filePath}}', p);
 
-            exec(hook, function (error, stdout, stderr) {
-                if (stderr) {
-                    console.error("Created. But hook didn't work, because:");
-                    console.error(stderr);
-                }
+            try {
+                console.log(hook);
+                console.log(fs.readdirSync('.'));
 
-                if (stdout) {
+                var hookStdout = execSync(hook).toString('utf-8');
+
+                if (hookStdout) {
                     console.log('Hook output:');
-                    console.log(stdout);
+                    console.log(hookStdout);
                 }
-            });
+            } catch(e) {
+                console.error("Created. But hook had error.");
+                console.error(e);
+            }
         }
 
         if (options.g) gitQueue.push(p);
@@ -390,9 +393,17 @@ function createFile(file, type, trg, modVal, cursorPos, hook){
             .replace('{{file-path}}', p)
             .replace('{{line-number}}', cursorPos);
 
-        exec(editorCmd, function (error, stdout, stderr) {
-            if (stderr) console.error(stderr);
-        });
+        try {
+            var stdout = execSync(editorCmd).toString('utf-8');
+
+            if (stdout) {
+                console.log('Editor\'s stdout:');
+                console.log(stdout);
+            }
+
+        } catch(e) {
+            console.log(e);
+        }
     }
 }
 
@@ -409,13 +420,13 @@ function gitAdd(files){
 
     var dir = path.dirname(files[0]);
 
-    exec('cd ' + dir + ' && git add ' + fileList, function (error, stdout, stderr) {
-        if (stderr) console.error(stderr);
+    var stdout = execSync('cd ' + dir + ' && git add ' + fileList).toString('utf-8');
 
-        if (isDebug) {
-            console.log('Added to git: \n' + files.join('\n'));
-        }
-    });
+    if (stdout) console.error(stdout);
+
+    if (isDebug) {
+        console.log('Added to git: \n' + files.join('\n'));
+    }
 }
 
 function getCursorPosition(file){

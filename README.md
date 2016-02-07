@@ -127,6 +127,9 @@ For example, default css template contain:
 #### `deps_task`
 Options for autotask when it called on deps file. `files` – list of file types to be created in addition to folders.  
 
+#### `auto_dir`
+Options for autotask when it called on directory. It set needed file types, which will be created. Default is `['css']`.
+
 #### `editor-open-command`
 Command to be called after creating the file. There are two placeholders:  
 1. `{{file-path}}` to be replaced with relevant file path.  

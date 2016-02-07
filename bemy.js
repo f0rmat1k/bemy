@@ -208,7 +208,11 @@ function normalizeFileTypes(fileTypes){
 
 function startCreating(fileTypes){
     if (!fileTypes || fileTypes.length === 0) {
-        fileTypes = ['css']
+        if (config.auto_dir && !Array.isArray(config.auto_dir)) {
+            throw new Error('Wrong config param "auto_dir". Must be an array.')
+        }
+
+        fileTypes = config.auto_dir || ['css']
     } else {
         fileTypes = normalizeFileTypes(fileTypes);
     }

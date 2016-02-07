@@ -65,6 +65,7 @@
   "deps_task": {
     "files": [ "css" ]
   },
+  "auto_dir": [ "css" ],
   "debug": false,
   "checkForUpdate": true
 }

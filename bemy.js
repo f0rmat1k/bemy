@@ -361,7 +361,9 @@ function createFile(file, type, trg, modVal, cursorPos, hook){
 
     if (info.isFile) trg = path.dirname(trg);
 
-    var p = path.join(trg, info.bemName + modVal + SHORTCUTS[type].suffix);
+    var filename = SHORTCUTS[type].filename || info.bemName + modVal + SHORTCUTS[type].suffix;
+
+    var p = path.join(trg, filename);
 
     if (!fs.existsSync(p)) {
         fse.outputFileSync(p, file);

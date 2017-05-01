@@ -209,10 +209,10 @@ function normalizeFileTypes(fileTypes){
 function startCreating(fileTypes){
     if (!fileTypes || fileTypes.length === 0) {
         if (config.auto_dir && !Array.isArray(config.auto_dir)) {
-            throw new Error('Wrong config param "auto_dir". Must be an array.')
+            config.auto_dir = [config.auto_dir];
         }
 
-        fileTypes = config.auto_dir || ['css']
+        fileTypes = config.auto_dir || ['css'];
     } else {
         fileTypes = normalizeFileTypes(fileTypes);
     }
@@ -264,8 +264,11 @@ function insertName(file, trg, modVal){
 
     return file
         .replace(/{{blockName}}/g, info.blockName)
+        .replace(/{{BlockName}}/g, capitalizeFirstLetter(info.blockName))
         .replace(/{{elemName}}/g, info.elemName)
+        .replace(/{{ElemName}}/g, capitalizeFirstLetter(info.elemName))
         .replace(/{{modName}}/g, info.modName)
+        .replace(/{{ModName}}/g, capitalizeFirstLetter(info.modName))
         .replace(/{{modVal}}/g, modVal || '');
 }
 
@@ -512,4 +515,9 @@ function getConfigPath(dir) {
     } else {
         return getConfigPath(path.resolve(dir, '../'));
     }
+}
+
+function capitalizeFirstLetter(string) {
+	string = string || '';
+	return string.charAt(0).toUpperCase() + string.slice(1);
 }

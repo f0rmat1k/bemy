@@ -7,6 +7,7 @@ var minimist = require('minimist');
 var path = require('path');
 var execSync = require('child_process').execSync;
 var depsNormalize = require('deps-normalize');
+var kebabCase = require('kebab-case');
 
 var options = minimist(process.argv.slice(2)),
     trgPath = options.f ? path.resolve(options.f) : process.env.PWD,
@@ -263,13 +264,19 @@ function insertName(file, trg, modVal){
     var info = bemInfo(trg);
 
     return file
-        .replace(/{{blockName}}/g, info.blockName)
+        .replace(/{{blockName}}/g, lowerCaseFirstLetter(info.blockName))
         .replace(/{{BlockName}}/g, capitalizeFirstLetter(info.blockName))
+        .replace(/{{block-name}}/g, kebabCase(lowerCaseFirstLetter(info.blockName)))
+        .replace(/{{Block-name}}/g, capitalizeFirstLetter(kebabCase(lowerCaseFirstLetter(info.blockName))))
         .replace(/{{elemName}}/g, info.elemName)
         .replace(/{{ElemName}}/g, capitalizeFirstLetter(info.elemName))
+        .replace(/{{elem-name}}/g, kebabCase(lowerCaseFirstLetter(info.elemName)))
         .replace(/{{modName}}/g, info.modName)
         .replace(/{{ModName}}/g, capitalizeFirstLetter(info.modName))
-        .replace(/{{modVal}}/g, modVal || '');
+        .replace(/{{mod-name}}/g, kebabCase(lowerCaseFirstLetter(info.modName)))
+        .replace(/{{modVal}}/g, modVal || '')
+        .replace(/{{ModVal}}/g, capitalizeFirstLetter(modVal))
+        .replace(/{{mod-val}}/g, kebabCase(lowerCaseFirstLetter(modVal)));
 }
 
 function createStructureByDeps(){
@@ -520,4 +527,9 @@ function getConfigPath(dir) {
 function capitalizeFirstLetter(string) {
 	string = string || '';
 	return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+function lowerCaseFirstLetter(string) {
+    string = string || '';
+    return string.charAt(0).toLowerCase() + string.slice(1);
 }
